@@ -1,8 +1,12 @@
 {
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "mkdir -p public && for f in *.html.txt; do cp \"$f\" \"public/${f%.txt}\"; done && ls public",
+  "outputDirectory": "public",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/app.html" },
-    { "source": "/plus", "destination": "/app.html" },
-    { "source": "/free", "destination": "/app.html" }
+    { "source": "/", "destination": "/app" },
+    { "source": "/plus", "destination": "/app" },
+    { "source": "/free", "destination": "/app" }
   ]
 }
