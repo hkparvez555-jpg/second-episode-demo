@@ -1,0 +1,1387 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Second Episode</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column, a soft blob hero per screen, cards only for things she acts on, fixed tab bar. */
+:root{
+  --bg:#FAF6F4; --surface:#FFFFFF; --ink:#2A1A2C; --muted:#6F5D70; --line:#EBDFE4;
+  --accent:#8E3B68; --accent-ink:#FFFFFF; --accent-soft:#F5DFEA;
+  --peach:#EFA98A; --peach-soft:#FCEADF;
+  --sage:#5E8E77; --sage-soft:#DCEBE2;
+  --amber:#B97A10; --amber-soft:#F8E8C6;
+  --rose:#B2304A; --rose-soft:#F8DADF;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, sans-serif;
+  --r-lg:28px; --r-md:18px; --r-sm:12px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#181117; --surface:#241A23; --ink:#F6ECF1; --muted:#BCA9B7; --line:#3A2B37;
+  --accent:#E39BC0; --accent-ink:#2A1222; --accent-soft:#45263A;
+  --peach:#E9A585; --peach-soft:#3C2820; --sage:#8DC2A8; --sage-soft:#20352B;
+  --amber:#E7B65C; --amber-soft:#3B2F1D; --rose:#F08A9D; --rose-soft:#452029; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#181117; --surface:#241A23; --ink:#F6ECF1; --muted:#BCA9B7; --line:#3A2B37;
+  --accent:#E39BC0; --accent-ink:#2A1222; --accent-soft:#45263A;
+  --peach:#E9A585; --peach-soft:#3C2820; --sage:#8DC2A8; --sage-soft:#20352B;
+  --amber:#E7B65C; --amber-soft:#3B2F1D; --rose:#F08A9D; --rose-soft:#452029; color-scheme:dark }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px 120px}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,8vw,40px);line-height:1.05;font-weight:800}
+h2{font-size:24px;line-height:1.15;font-weight:700}
+h3{font-size:18px;line-height:1.25;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.tiny{font-size:12.5px}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.stack{display:flex;flex-direction:column;gap:12px}
+.stack-lg{display:flex;flex-direction:column;gap:22px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.num{font-variant-numeric:tabular-nums}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding-block:12px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.chip-btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:600 13px var(--body);cursor:pointer}
+
+/* hero */
+.hero{position:relative;border-radius:var(--r-lg);padding:26px 22px 24px;overflow:hidden;background:var(--accent-soft);isolation:isolate}
+.hero.peach{background:var(--peach-soft)} .hero.sage{background:var(--sage-soft)} .hero.rose{background:var(--rose-soft)} .hero.amber{background:var(--amber-soft)}
+.hero .blob{position:absolute;z-index:-1;pointer-events:none}
+.hero-art{display:flex;justify-content:center;margin-block:4px 8px}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:18px}
+.card.flat{background:transparent;border:0;padding:0}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:15px 22px;font:700 16px var(--body);cursor:pointer;text-decoration:none;transition:transform .15s ease, background .2s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-soft{background:var(--accent-soft);color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--accent);padding-inline:6px}
+.btn-block{width:100%}
+.btn-urgent{background:var(--rose);color:#fff}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* option tiles (quiz) */
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;text-align:left;width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);padding:16px 18px;font:600 17px var(--body);color:var(--ink);cursor:pointer;transition:border-color .2s, background .2s}
+.opt:hover{border-color:var(--accent)}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.opt .dot{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
+.opt.on .dot{border-color:var(--accent);background:var(--accent)}
+.opt.on .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent-ink)}
+
+/* pills for forms */
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 15px;font:600 15px var(--body);cursor:pointer}
+.pill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label,.field .lbl{font-weight:700;font-size:15px}
+input[type=date],input[type=text],textarea{font:500 16px var(--body);color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;width:100%}
+
+/* progress */
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress span{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
+
+/* status pill */
+.tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700}
+.tag.rec{background:var(--accent);color:var(--accent-ink)}
+.tag.ok{background:var(--sage-soft);color:var(--sage)}
+.tag.warn{background:var(--amber-soft);color:var(--amber)}
+.tag.bad{background:var(--rose-soft);color:var(--rose)}
+.grade{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:12px;font:800 16px var(--display)}
+.grade.A{background:var(--sage-soft);color:var(--sage)}
+.grade.B{background:var(--amber-soft);color:var(--amber)}
+.grade.X{background:var(--rose-soft);color:var(--rose)}
+
+/* ask list */
+.ask{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--line)}
+.ask:first-child{border-top:0;padding-top:0}
+.ask .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:800 14px var(--display)}
+.ref{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px}
+
+/* evidence */
+details.ev{border-top:1px solid var(--line);padding:12px 0}
+details.ev:first-of-type{border-top:0}
+details.ev summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;font-weight:700}
+details.ev summary::-webkit-details-marker{display:none}
+details.ev summary .why{margin-left:auto;font-size:13px;color:var(--accent);font-weight:700}
+details.ev p{margin:8px 0 0 46px;color:var(--muted);font-size:14.5px}
+
+/* safety tiles */
+.flag{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);padding:14px 16px;font:600 15.5px/1.4 var(--body);color:var(--ink);cursor:pointer}
+.flag .box{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--line);margin-top:1px;display:grid;place-items:center}
+.flag.on{border-color:var(--rose);background:var(--rose-soft)}
+.flag.on .box{background:var(--rose);border-color:var(--rose)}
+.flag.soft.on{border-color:var(--sage);background:var(--sage-soft)}
+.flag.soft.on .box{background:var(--sage);border-color:var(--sage)}
+.flag.on .box::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+
+/* bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:8;background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.nav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 2px 9px;color:var(--muted);text-decoration:none;font-size:11.5px;font-weight:700}
+.nav a svg{width:24px;height:24px}
+.nav a.on{color:var(--accent)}
+
+/* summary card (the thing she shows at the counter) */
+.paper{background:#FFFFFF;color:#22171F;border-radius:20px;padding:24px 22px;border:1px solid var(--line);box-shadow:0 20px 50px -30px rgba(60,20,50,.45)}
+.paper h2{color:#22171F}
+.paper .muted{color:#6A5866}
+.paper .ref{background:#F7F1F4;border-color:#E9DDE3;color:#6A5866}
+.paper .rule{height:1px;background:#EBDFE4;margin:16px 0}
+.paper .ask .n{background:#F5DFEA;color:#8E3B68}
+.paper .ask{border-color:#EBDFE4}
+
+.banner{display:flex;gap:12px;align-items:flex-start;border-radius:var(--r-md);padding:14px 16px;background:var(--amber-soft);color:var(--ink);font-size:14.5px}
+.banner.red{background:var(--rose-soft)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:20;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.show{opacity:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px}
+.stat b{display:block;font:800 28px/1 var(--display)}
+svg text{font-family:var(--body)}
+.fade{animation:fade .45s ease both}
+@keyframes fade{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:340px){.grid2{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#start" aria-label="Second Episode home">
+      <svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><circle cx="15" cy="20" r="11" fill="var(--peach)"/><circle cx="25" cy="20" r="11" fill="var(--accent)" opacity=".85"/></svg>
+      <span id="brandName">Second Episode</span>
+    </a>
+    <button class="chip-btn" data-act="menu" id="menuBtn">Record</button>
+  </header>
+  <div id="menu" hidden class="card stack" style="margin-bottom:14px">
+    <p class="small muted">Your record stays on this device only. Nothing is sent anywhere.</p>
+    <div class="row">
+      <button class="btn btn-soft" data-act="seed">Load the example (Sue, 54)</button>
+      <button class="btn btn-ghost" data-act="wipe">Start my own, empty</button>
+    </div>
+  </div>
+  <main id="view"></main>
+</div>
+
+<nav class="nav" aria-label="Main">
+  <div class="nav-in" id="nav"></div>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------------- data ---------------- */
+const EDITION=/free/i.test(location.pathname+location.search)?'free':'paid'; // site root and /plus = Second Episode Plus; /free = free edition
+const PAID=EDITION==='paid'; if(PAID) document.title='Second Episode Plus';
+const KEY='secondEpisode.v1';
+const DAY=864e5;
+const today=()=>{const d=new Date();d.setHours(12,0,0,0);return d};
+const iso=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const addDays=(d,n)=>iso(new Date(new Date(d+'T12:00:00').getTime()+n*DAY));
+const daysBetween=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/DAY);
+const fmt=d=>new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+const fmtShort=d=>new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+
+function seedState(){
+  const t=iso(today());
+  const a=addDays(t,-268), b=addDays(t,-136), c=addDays(t,-18), asmt=addDays(t,-16), fu=addDays(t,-2);
+  return {
+    example:true, name:'Sue',
+    episodes:[
+      {id:uid(),date:a,where:'pharmacy',sample:'no',result:'notsent',abx:'yes',abxName:'Nitrofurantoin',settled:'fully',timing:'none'},
+      {id:uid(),date:b,where:'gp',sample:'yes',result:'confirmed',abx:'yes',abxName:'Trimethoprim',settled:'partly',timing:'none'},
+      {id:uid(),date:c,where:'pharmacy',sample:'no',result:'notsent',abx:'yes',abxName:'Nitrofurantoin',settled:'fully',timing:'notsure'}
+    ],
+    tests:[],
+    assessment:{date:asmt,answers:{d1:'stopped',d2:'50',d3:'often',d4:'no',d5:'noperiods',d6:'no',d7:'3-5',d8:'no',d9:'no',d10:'no'}},
+    redFlag:null,
+    followups:{'2w':{date:fu,asks:{vagOest:'started',otc:'started',culture:'discussed',methenamine:'notdiscussed'},note:'Pharmacist sold me Gina. GP will send a sample next time.'}},
+    extraAsks:[]
+  };
+}
+function emptyState(){return {example:false,name:'',episodes:[],tests:[],assessment:null,redFlag:null,followups:{},extraAsks:[]}}
+let state;
+try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){state=null}
+if(!state||!Array.isArray(state.episodes)) state=seedState();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+/* ---------------- options ---------------- */
+const WHERE={pharmacy:'Pharmacy',gp:'GP',ooh:'111 or out of hours',ae:'A&E or walk-in',self:'Treated myself',nowhere:'Nowhere'};
+const SAMPLE={yes:'Yes',no:'No',dk:"Don't know"};
+const RESULT={confirmed:'Infection confirmed',none:'No infection found',nevertold:'Never told',notsent:'Not sent'};
+const ABX={yes:'Yes',no:'No'};
+const SETTLED={fully:'Fully',partly:'Partly',no:'No'};
+const TIMING={sex:'Within 2 days of sex',period:'Around a period',none:'No pattern',notsure:'Not sure'};
+
+const SAFETY=[
+ {id:'c1',q:'I have seen blood in my urine, even once',level:3,act:'Contact your GP today.',why:'Visible blood in urine always needs a proper assessment. Over 45, a referral is usual.',ref:'NICE NG12 1.6.1'},
+ {id:'c2',q:'I have been told a dipstick or sample showed blood more than once, without an infection',level:2,act:'Book a GP review within a week.',why:'Blood that keeps showing up on a dipstick needs investigating.',ref:'NICE NG12 1.6.2'},
+ {id:'c3',q:'I have a fever, shivering, or pain in my back or side under the ribs',level:3,act:'Get same-day care: your GP, or 111 if the surgery is closed.',why:'These can be signs of a kidney infection.',ref:'NICE CKS pyelonephritis'},
+ {id:'c4',q:'I am pregnant, or could be',level:3,act:'Contact your GP or midwife today.',why:'UTIs in pregnancy are looked after differently.',ref:'NICE CKS UTI (lower) women'},
+ {id:'c5',q:'My symptoms did not settle after two courses of antibiotics in a row',level:2,act:'Book a GP review within a week, with a urine sample sent to the lab.',why:'Infections that do not clear need a lab result to guide treatment.',ref:'NICE CKS recurrent UTI'},
+ {id:'c6',q:'I am 60 or over, and the infections keep coming back despite treatment',level:1,act:'Book a routine GP review to talk about referral.',why:'NICE lists this as something a GP should consider looking into further.',ref:'NICE NG12 1.6.4'},
+ {id:'c7',q:'I have a catheter, a known kidney or bladder problem, or a condition or medicine that lowers my immunity',level:0,act:'Your GP should lead your care.',why:'You can keep using the log and summary here, but the pattern check is not designed for you.',ref:'NICE CKS recurrent UTI'}
+];
+const LEVEL_TXT={3:'Today',2:'Within a week',1:'Routine GP review',0:'GP-led care'};
+
+const QUESTIONS=[
+ {id:'d1',icon:'moon',q:'Which best describes your periods?',why:'Hormone changes around the menopause are one of the most common, and most treatable, drivers.',opts:[['regular','Regular'],['irregular','Irregular or changing'],['stopped','Stopped for over a year'],['hyst','I have had a hysterectomy'],['contra','My contraception stops them']]},
+ {id:'d2',icon:'cake',q:'How old are you?',why:'From 50, some options are available straight from the pharmacy.',opts:[['u45','Under 45'],['45','45 to 49'],['50','50 or over']]},
+ {id:'d3',icon:'drop',q:'Do you get vaginal dryness, soreness, or pain during sex?',why:'Dryness is often linked to lower oestrogen, and it can feel like a UTI.',opts:[['often','Often'],['sometimes','Sometimes'],['no','No']]},
+ {id:'d4',icon:'heart',q:'Do your infections tend to start within a day or two of sex?',why:'If they do, there are prevention options that fit that pattern.',opts:[['usually','Usually'],['sometimes','Sometimes'],['no','No'],['na','Not applicable']]},
+ {id:'d5',icon:'cycle',q:'Do they tend to come at a particular point in your cycle?',why:'A cycle pattern opens up more ways to prevent them.',opts:[['around','Just before or during a period'],['after','Just after a period'],['none','No pattern'],['noperiods',"I don't have periods"]],skip:a=>['stopped','hyst','contra'].includes(a.d1)},
+ {id:'d6',icon:'shield',q:'Do you use a diaphragm, spermicide, or spermicidal condoms?',why:'Spermicide can change the protective bacteria around the bladder opening.',opts:[['yes','Yes'],['no','No']]},
+ {id:'d7',icon:'pill',q:'How many courses of antibiotics for urine symptoms in the last 12 months?',why:'Each course makes the next one more likely to fail.',opts:[['0-2','0 to 2'],['3-5','3 to 5'],['6+','6 or more']]},
+ {id:'d8',icon:'flask',q:'Has a sample ever shown no infection when you had symptoms?',why:'Up to a third of treated episodes grow nothing in the lab.',opts:[['yes','Yes'],['no','No'],['never','I have never had a sample tested']]},
+ {id:'d9',icon:'flower',q:'Along with urine symptoms, do you get itching, unusual discharge, or soreness on the outside?',why:'Thrush, BV and dryness can feel just like a UTI.',opts:[['often','Often'],['sometimes','Sometimes'],['no','No']]},
+ {id:'d10',icon:'bug',q:'Has anyone told you a sample grew a bug resistant to the usual antibiotics?',why:'If so, antibiotics should be chosen from the lab result.',opts:[['yes','Yes'],['no','No'],['unsure','Not sure']]}
+];
+
+const PAT={
+ OEST:{name:'Oestrogen-linked',tone:'peach',icon:'flower',say:'Around and after the menopause, the tissue around the bladder opening thins and loses its natural protection. Women in your situation are usually offered vaginal oestrogen, which roughly halves repeat infections. It is a local treatment, not HRT.',one:'my infections may be linked to lower oestrogen around the bladder opening'},
+ CYCLE:{name:'Sex or cycle-linked',tone:'sage',icon:'cycle',say:'Your infections seem to follow a pattern. That usually means bacteria are being pushed towards the bladder at a predictable time, which gives you more options to prevent it.',one:'my infections tend to follow sex or my cycle'},
+ EXPO:{name:'High antibiotic exposure',tone:'amber',icon:'pill',say:'You have had a lot of antibiotics. Each course makes the next one more likely to fail, so the priority now is to find out exactly what is growing and to use a non-antibiotic preventer if possible.',one:'I have had a lot of antibiotic courses and would like the next steps guided by lab results'},
+ MIMIC:{name:'May not all be infections',tone:'rose',icon:'lens',say:'Some of what you are describing is common in conditions that feel like a UTI but are not one, such as vaginal dryness, thrush, bacterial vaginosis or an irritable bladder. Antibiotics will not help those, so it is worth asking for a proper look.',one:'some of my episodes may not be infections and I would like that looked into'},
+ GENERAL:{name:'No clear pattern yet',tone:'',icon:'sprout',say:'Your infections are recurrent but the pattern is not clear yet. The most useful things now are to get every episode tested and to log them here so a pattern can show.',one:'my infections are recurrent but the pattern is not clear yet'}
+};
+
+function askBank(a){
+  const otcOK=a.d2==='50'&&a.d1==='stopped';
+  return {
+   vagOest:{t:'Ask for vaginal oestrogen cream or pessary.',ref:'NICE NG112 1.2 · CKS recurrent UTI',g:'A'},
+   otc: otcOK
+     ?{t:'You are 50 or over with no period for a year, so vaginal oestrogen is sold over the counter as Gina. Ask the pharmacist, no prescription needed.',ref:'MHRA reclassification 2022',g:'A',otc:true}
+     :{t:'Vaginal oestrogen needs a prescriber for you. Ask your GP, nurse or a clinician review.',ref:'MHRA: OTC only from 50 with no period for a year'},
+   culture:{t:'Ask for a urine sample to be sent to the lab every time, before antibiotics start.',ref:'NICE NG112 1.1.5'},
+   cultureShare:{t:'Ask for a urine sample before antibiotics, and for the result to be shared with you.',ref:'NICE NG112 1.1.5'},
+   methenamine:{t:'Ask whether methenamine hippurate (Hiprex) is suitable as a preventer instead of long-term antibiotics.',ref:'NICE NG112 1.2.6 (2024 update)',g:'A'},
+   postcoital:{t:'Ask about a single-dose antibiotic taken after sex, rather than a full course each time.',ref:'NICE NG112 1.2.8'},
+   contra:{t:'Ask for a contraception review, as diaphragms and spermicide are linked to infections.',ref:'NICE CKS recurrent UTI'},
+   habits:{t:'Simple habits that help: pass urine after sex, avoid spermicide, and drink an extra 1.5 litres of water a day if you drink little.',ref:'NICE CKS self-care',g:'A'},
+   cranberry:{t:'Cranberry products may modestly reduce repeat infections for some women. Optional, not a must.',ref:'Cochrane review 2023',g:'B'},
+   labGuided:{t:'A resistant bug was found before, so ask that antibiotics are chosen from the lab result, not guessed.',ref:'NICE NG112 1.1.6'},
+   referral:{t:'Ask whether a referral is appropriate if prevention has not worked after six months.',ref:'NICE CKS recurrent UTI'},
+   vagAssess:{t:'Ask for the vaginal symptoms to be looked at too: a swab, or an examination for dryness.',ref:'NICE CKS vaginal discharge · CKS menopause'},
+   bladder:{t:'Ask whether bladder pain syndrome or an overactive bladder could be playing a part.',ref:'NICE CKS LUTS in women'},
+   selfcare:{t:'Keep up the self-care basics: fluids, passing urine after sex, and pain relief such as paracetamol.',ref:'NICE CKS self-care'},
+   rerun:{t:'Log your next episode here and re-run this check, so a pattern can show.',ref:'Second Episode'}
+  };
+}
+function asksFor(p,a){
+  const ids={
+   OEST:['vagOest','otc','culture','methenamine'],
+   CYCLE:['postcoital',...(a.d6==='yes'?['contra']:[]),'habits','cranberry'],
+   EXPO:['culture','methenamine',...(a.d10==='yes'?['labGuided']:[]),'referral'],
+   MIMIC:['cultureShare','vagAssess','bladder',...(a.d2!=='u45'&&['often','sometimes'].includes(a.d3)?['vagOest','otc']:[])],
+   GENERAL:['culture','selfcare','rerun']
+  }[p];
+  return ids;
+}
+
+/* ---------------- logic ---------------- */
+function sortedEps(){return [...state.episodes].sort((x,y)=>x.date<y.date?-1:1)}
+function windowCounts(atISO){
+  const eps=state.episodes.filter(e=>e.date<=atISO);
+  return {six:eps.filter(e=>daysBetween(e.date,atISO)<=183).length, year:eps.filter(e=>daysBetween(e.date,atISO)<=365).length};
+}
+function isRecurrentAt(t){const c=windowCounts(t);return c.six>=2||c.year>=3}
+function recurrentSince(){
+  for(const e of sortedEps()) if(isRecurrentAt(e.date)) return e.date;
+  return null;
+}
+function abxCount12(t){return state.episodes.filter(e=>e.date<=t&&daysBetween(e.date,t)<=365&&e.abx==='yes').length}
+
+function score(a){
+  const s={OEST:0,CYCLE:0,EXPO:0,MIMIC:0};
+  if(a.d1==='stopped'||a.d1==='hyst') s.OEST+=3;
+  if(a.d1==='irregular'){s.OEST+=1;s.CYCLE+=1}
+  if(a.d1==='regular') s.CYCLE+=2;
+  if(a.d2==='50') s.OEST+=2; if(a.d2==='45') s.OEST+=1;
+  if(a.d3==='often'){s.OEST+=3;s.MIMIC+=1} if(a.d3==='sometimes') s.OEST+=1;
+  if(a.d4==='usually') s.CYCLE+=3; if(a.d4==='sometimes') s.CYCLE+=1;
+  if(a.d5==='around'||a.d5==='after') s.CYCLE+=2;
+  if(a.d6==='yes') s.CYCLE+=2;
+  if(a.d7==='3-5') s.EXPO+=2; if(a.d7==='6+') s.EXPO+=3;
+  if(a.d8==='yes') s.MIMIC+=3; if(a.d8==='never') s.EXPO+=2;
+  if(a.d9==='often') s.MIMIC+=3; if(a.d9==='sometimes') s.MIMIC+=1;
+  if(a.d10==='yes') s.EXPO+=3;
+  // test results she already has
+  for(const t of state.tests){ if(t.finding==='vaginal') s.MIMIC+=2; if(t.finding==='ph') s.OEST+=1; }
+  return s;
+}
+function assign(a){
+  const s=score(a), order=['MIMIC','OEST','EXPO','CYCLE'];
+  const ranked=order.filter(k=>s[k]>=3).sort((x,y)=>s[y]-s[x]||order.indexOf(x)-order.indexOf(y));
+  const primary=ranked[0]||'GENERAL', secondary=ranked[1]||null;
+  const expoAddon=s.EXPO>=2&&primary!=='EXPO'&&secondary!=='EXPO';
+  return {s,primary,secondary,expoAddon};
+}
+function buildPlan(){
+  if(!state.assessment) return null;
+  const a=state.assessment.answers, r=assign(a), bank=askBank(a);
+  const main=asksFor(r.primary,a);
+  const extra=[];
+  if(r.secondary) for(const id of asksFor(r.secondary,a)) if(!main.includes(id)&&!extra.includes(id)) extra.push(id);
+  if(r.expoAddon) for(const id of ['culture','methenamine']) if(!main.includes(id)&&!extra.includes(id)&&!(id==='culture'&&main.includes('cultureShare'))) extra.push(id);
+  for(const id of state.extraAsks) if(!main.includes(id)&&!extra.includes(id)) extra.push(id);
+  return {...r,main:main.map(id=>({id,...bank[id]})),extra:extra.slice(0,3).map(id=>({id,...bank[id]}))};
+}
+
+/* Bladder health score: a summary of her own logged record, not a prediction. Weights are provisional. */
+function scoreAt(t){
+  const eps=state.episodes.filter(e=>e.date<=t&&daysBetween(e.date,t)<=365);
+  const rec=isRecurrentAt(t);
+  const burden=Math.max(0,25-7*eps.length);
+  const exposure=Math.max(0,25-6*eps.filter(e=>e.abx==='yes').length);
+  let prevention=25, completeness;
+  const asmtDone=state.assessment&&state.assessment.date<=t;
+  const fus=Object.values(state.followups).filter(f=>f.date<=t);
+  if(rec){
+    prevention=0;
+    const last=fus.sort((x,y)=>x.date<y.date?1:-1)[0];
+    if(last&&last.asks){const v=Object.values(last.asks);prevention=Math.round(25*v.filter(x=>x==='started').length/Math.max(1,v.length))}
+  }
+  const sent=eps.length?eps.filter(e=>e.sample==='yes').length/eps.length:1;
+  completeness=Math.round((rec?(asmtDone?8:0):8)+9*sent+(rec?(fus.length?8:0):8));
+  const parts={burden,exposure,prevention,completeness};
+  return {total:burden+exposure+prevention+completeness,parts};
+}
+function scoreHistory(){
+  const pts=new Set(state.episodes.map(e=>e.date));
+  if(state.assessment) pts.add(state.assessment.date);
+  Object.values(state.followups).forEach(f=>pts.add(f.date));
+  const t=iso(today()); pts.add(t);
+  return [...pts].filter(d=>daysBetween(d,t)<=400).sort().map(d=>({d,s:scoreAt(d).total}));
+}
+function frozenScore(){
+  if(!state.redFlag) return null;
+  const before=addDays(state.redFlag.date,-1);
+  return scoreAt(before).total;
+}
+
+/* ---------------- icons & art ---------------- */
+const ICON={
+ moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>',
+ cake:'<path d="M4 20h16M5 20v-7h14v7M8 13V9m4 4V8m4 5V9"/><path d="M8 6.5c0-1 .8-1.5.8-1.5M12 5.5c0-1 .8-1.5.8-1.5M16 6.5c0-1 .8-1.5.8-1.5"/>',
+ drop:'<path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5Z"/>',
+ heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
+ cycle:'<path d="M20 12a8 8 0 0 1-14.3 4.9M4 12a8 8 0 0 1 14.3-4.9"/><path d="M18.5 3v4.2h-4.2M5.5 21v-4.2h4.2"/>',
+ shield:'<path d="M12 3 5 6v5.5c0 4.3 3 7.7 7 9.5 4-1.8 7-5.2 7-9.5V6l-7-3Z"/>',
+ pill:'<rect x="3" y="8.5" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"/><path d="m9.2 7.9 5.6 8.2"/>',
+ flask:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 15h9"/>',
+ flower:'<circle cx="12" cy="10" r="2.4"/><path d="M12 7.6c0-3 2.5-4 2.5-4s1.6 2.6-.4 4.9M14.4 10c3 0 4 2.5 4 2.5s-2.6 1.6-4.9-.4M12 12.4c0 3-2.5 4-2.5 4M9.6 10c-3 0-4-2.5-4-2.5s2.6-1.6 4.9.4M12 13v8"/>',
+ bug:'<rect x="7.5" y="7" width="9" height="12" rx="4.5"/><path d="M12 7V4.5M9 4l1.5 2M15 4l-1.5 2M7.5 11H4m3.5 4H4m12.5-4H20m-3.5 4H20"/>',
+ lens:'<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/>',
+ sprout:'<path d="M12 21v-9M12 12c0-4 3-6 7-6 0 4-3 6-7 6ZM12 14c0-3-2.5-5-6-5 0 3 2.5 5 6 5Z"/>',
+ alert:'<path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 10v4.5M12 17.2v.1"/>',
+ home:'<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4v-9Z"/>',
+ plus:'<circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/>',
+ check:'<path d="M5 4h14v16H5z"/><path d="m8.5 12 2.3 2.3L15.5 9.5"/>',
+ list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+ bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16ZM10 20.5a2 2 0 0 0 4 0"/>',
+ arrow:'<path d="M5 12h14m-5-5 5 5-5 5"/>',
+ back:'<path d="M19 12H5m5-5-5 5 5 5"/>',
+ lock:'<rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+ copy:'<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>'
+};
+const ic=(n,s=24,w=1.8)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
+const BLOBS=['M44 -2C61 9 74 30 67 50C60 70 32 82 10 76C-12 70 -30 46 -26 22C-22 -2 -4 -16 14 -16C26 -16 34 -8 44 -2Z',
+             'M38 -30C56 -18 66 6 60 28C54 50 30 70 6 66C-18 62 -40 38 -40 12C-40 -14 -20 -40 2 -42C16 -43 26 -38 38 -30Z'];
+const blob=(i,color,x,y,sc,op=1)=>`<svg class="blob" style="left:${x};top:${y}" width="${200*sc}" height="${200*sc}" viewBox="-50 -50 130 130" aria-hidden="true"><path d="${BLOBS[i]}" fill="${color}" opacity="${op}"/></svg>`;
+function artBubble(icon,tone){
+  const c=tone?`var(--${tone})`:'var(--accent)';
+  return `<svg width="120" height="104" viewBox="0 0 120 104" aria-hidden="true">
+    <circle cx="44" cy="54" r="38" fill="${c}" opacity=".28"/><circle cx="76" cy="50" r="34" fill="${c}" opacity=".45"/>
+    <circle cx="94" cy="20" r="7" fill="${c}" opacity=".6"/><circle cx="18" cy="22" r="4" fill="${c}" opacity=".5"/>
+    <g transform="translate(42 30) scale(1.75)" stroke="var(--ink)" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICON[icon]}</g></svg>`;
+}
+
+/* 12-month timeline */
+function timelineSVG(){
+  const W=340,H=116,pad=14, t=iso(today());
+  const x=d=>pad+(1-daysBetween(d,t)/365)*(W-pad*2);
+  const months=[];
+  for(let i=12;i>=0;i-=2){const d=new Date(today());d.setMonth(d.getMonth()-i);d.setDate(1);const di=iso(d);if(daysBetween(di,t)<=365)months.push(di)}
+  const eps=state.episodes.filter(e=>daysBetween(e.date,t)<=365&&e.date<=t);
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Episodes in the last 12 months: ${eps.length}">
+    <rect x="${x(addDays(t,-183))}" y="18" width="${x(t)-x(addDays(t,-183))}" height="56" rx="14" fill="var(--accent-soft)"/>
+    <text x="${x(t)-8}" y="32" text-anchor="end" font-size="11" font-weight="700" fill="var(--accent)">last 6 months</text>
+    <line x1="${pad}" x2="${W-pad}" y1="56" y2="56" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+    ${months.map(m=>`<line x1="${x(m)}" x2="${x(m)}" y1="52" y2="60" stroke="var(--line)" stroke-width="2"/><text x="${x(m)}" y="${H-22}" text-anchor="middle" font-size="11" fill="var(--muted)">${new Date(m+'T12:00:00').toLocaleDateString('en-GB',{month:'short'})}</text>`).join('')}
+    ${eps.map(e=>`<g><circle cx="${x(e.date)}" cy="56" r="11" fill="${e.abx==='yes'?'var(--accent)':'var(--surface)'}" stroke="var(--accent)" stroke-width="2.5"/>
+      ${e.sample==='yes'?`<circle cx="${x(e.date)+9}" cy="46" r="4.5" fill="var(--sage)" stroke="var(--surface)" stroke-width="1.5"/>`:''}</g>`).join('')}
+    <circle cx="${x(t)}" cy="56" r="4" fill="var(--ink)"/><text x="${x(t)}" y="${H-6}" text-anchor="end" font-size="11" font-weight="700" fill="var(--ink)">Today</text>
+  </svg>
+  <div class="row tiny muted" style="gap:14px;margin-top:2px">
+    <span class="row" style="gap:6px"><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="var(--accent)"/></svg>Antibiotics given</span>
+    <span class="row" style="gap:6px"><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/></svg>No antibiotics</span>
+    <span class="row" style="gap:6px"><svg width="10" height="10"><circle cx="5" cy="5" r="4.5" fill="var(--sage)"/></svg>Sample sent to lab</span>
+  </div>`;
+}
+function meterDots(n,need,label){
+  const k=Math.max(n,need);
+  return `<div class="stack" style="gap:6px"><div class="row" style="justify-content:space-between"><span class="small" style="font-weight:700">${label}</span><span class="small num muted">${n} logged · ${need} makes it recurrent</span></div>
+  <div class="row" style="gap:6px">${Array.from({length:k},(_,i)=>`<span style="width:26px;height:26px;border-radius:50%;${i<n?'background:var(--accent)':'border:2px dashed var(--line)'}"></span>`).join('')}</div></div>`;
+}
+function ringSVG(val,frozen){
+  const r=50,c=2*Math.PI*r,p=Math.max(0,Math.min(100,val))/100;
+  return `<svg width="132" height="132" viewBox="0 0 132 132" role="img" aria-label="Bladder health score ${val} out of 100">
+   <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--peach)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+   <circle cx="66" cy="66" r="${r}" fill="none" stroke="var(--line)" stroke-width="12"/>
+   <circle cx="66" cy="66" r="${r}" fill="none" stroke="${frozen?'var(--muted)':'url(#rg)'}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${c*p} ${c}" transform="rotate(-90 66 66)"/>
+   <text x="66" y="70" text-anchor="middle" font-size="36" font-weight="800" fill="var(--ink)" style="font-family:var(--display)">${val}</text>
+   <text x="66" y="90" text-anchor="middle" font-size="11" fill="var(--muted)">out of 100</text></svg>`;
+}
+function sparkSVG(h){
+  if(h.length<2) return '<p class="tiny muted">Your trend appears after your next entry.</p>';
+  const W=300,H=86,px=8,py=12;
+  const xs=i=>px+i*(W-2*px)/(h.length-1), ys=v=>H-py-(v/100)*(H-2*py);
+  const pts=h.map((p,i)=>`${xs(i)},${ys(p.s)}`).join(' ');
+  const last=h[h.length-1];
+  return `<svg viewBox="0 0 ${W} ${H+16}" width="100%" role="img" aria-label="Score trend">
+   <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".28"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+   ${[25,50,75].map(v=>`<line x1="${px}" x2="${W-px}" y1="${ys(v)}" y2="${ys(v)}" stroke="var(--line)" stroke-dasharray="2 4"/>`).join('')}
+   <polygon points="${xs(0)},${H-py} ${pts} ${xs(h.length-1)},${H-py}" fill="url(#sg)"/>
+   <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+   ${h.map((p,i)=>`<circle cx="${xs(i)}" cy="${ys(p.s)}" r="${i===h.length-1?5:3}" fill="${i===h.length-1?'var(--accent)':'var(--surface)'}" stroke="var(--accent)" stroke-width="2"/>`).join('')}
+   <text x="${px}" y="${H+12}" font-size="11" fill="var(--muted)">${fmtShort(h[0].d)}</text>
+   <text x="${W-px}" y="${H+12}" text-anchor="end" font-size="11" font-weight="700" fill="var(--ink)">Now ${last.s}</text></svg>`;
+}
+function partBars(parts){
+  const L=[['burden','Fewer episodes'],['exposure','Fewer antibiotics'],['prevention','Prevention in place'],['completeness','Care pathway followed']];
+  return `<div class="stack" style="gap:10px">${L.map(([k,l])=>`<div><div class="row" style="justify-content:space-between"><span class="small">${l}</span><span class="small num muted">${parts[k]}/25</span></div>
+   <div class="progress" style="height:8px;margin-top:4px"><span style="width:${parts[k]*4}%;background:${parts[k]>=17?'var(--sage)':parts[k]>=9?'var(--amber)':'var(--rose)'}"></span></div></div>`).join('')}</div>`;
+}
+function patternBars(s){
+  const max=Math.max(10,...Object.values(s));
+  return `<div class="stack" style="gap:10px">${['OEST','CYCLE','EXPO','MIMIC'].map(k=>{
+    const tone=PAT[k].tone;
+    return `<div><div class="row" style="justify-content:space-between"><span class="small" style="font-weight:600">${PAT[k].name}</span><span class="small num muted">${s[k]}</span></div>
+    <div style="position:relative;height:12px;border-radius:99px;background:var(--line);margin-top:5px">
+      <span style="position:absolute;inset:0 auto 0 0;width:${s[k]/max*100}%;border-radius:99px;background:var(--${tone})"></span>
+      <span style="position:absolute;left:${3/max*100}%;top:-4px;bottom:-4px;width:2px;background:var(--ink);opacity:.5"></span></div></div>`}).join('')}
+    <p class="tiny muted">The line marks the point where a pattern counts (a score of 3).</p></div>`;
+}
+
+/* ---------------- views ---------------- */
+let flow=null;     // assessment in progress
+let logDraft=null; // episode being logged
+let logStep='form';
+
+function statusBlock(){
+  const t=iso(today()), c=windowCounts(t), rec=isRecurrentAt(t), since=recurrentSince();
+  return {c,rec,since};
+}
+
+function viewHome(){
+  const {c,rec,since}=statusBlock();
+  const t=iso(today());
+  const sc=scoreAt(t), frozen=frozenScore();
+  const plan=buildPlan();
+  const next=nextFollowup();
+  const nm=state.name?`, ${esc(state.name)}`:'';
+  let cta;
+  if(state.redFlag) cta=`<a class="btn btn-urgent btn-block" href="#check">${ic('alert',20)} See where to go today</a>`;
+  else if(!state.episodes.length) cta=`<a class="btn btn-primary btn-block" href="#log">${ic('plus',20)} Log your first episode</a>`;
+  else if(rec&&!plan) cta=`<a class="btn btn-primary btn-block" href="#check">Work out what to ask for ${ic('arrow',20)}</a>`;
+  else if(plan) cta=`<a class="btn btn-primary btn-block" href="#card">Show my ask-list at the counter ${ic('arrow',20)}</a>`;
+  else cta=`<a class="btn btn-soft btn-block" href="#log">${ic('plus',20)} Log another episode</a>`;
+
+  return `<div class="stack-lg fade">
+  ${state.example?`<div class="banner"><span>${ic('flower',20)}</span><div><b>This is an example record</b> for Sue, 54, on her third UTI this year. Tap <b>Record</b> at the top to start your own.</div></div>`:''}
+  ${state.redFlag?`<div class="banner red"><span>${ic('alert',20)}</span><div><b>A red flag is open.</b> ${esc(state.redFlag.action)} Your score is paused until a clinician has seen you.
+    <div style="margin-top:8px"><button class="btn btn-ghost" data-act="clearFlag" style="padding:0">A clinician has seen me</button></div></div></div>`:''}
+
+  <section class="hero ${rec?'':'sage'}">
+    ${blob(0,'var(--peach)','62%','-30px',1.1,.55)}${blob(1,rec?'var(--accent)':'var(--sage)','72%','58%',.9,.25)}
+    <div class="stack" style="max-width:78%">
+      <span class="eyebrow">Hello${nm}</span>
+      ${rec
+        ?`<h1>This is now recurrent UTI.</h1><p>By the NHS's own definition, ${c.year>=3?`${c.year} infections in 12 months`:`${c.six} infections in 6 months`} counts as recurrent${since?` (since ${fmt(since)})`:''}. That changes what you should be offered.</p>`
+        :state.episodes.length?`<h1>You're keeping count.</h1><p>${c.year} episode${c.year===1?'':'s'} in the last year. We'll tell you if it reaches the NHS definition of recurrent UTI.</p>`
+        :`<h1>Every UTI counts.</h1><p>Log each infection. We'll tell you when it becomes recurrent, and what to ask for.</p>`}
+    </div>
+    <div style="margin-top:18px">${cta}</div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Your year</h3><span class="tag ${rec?'rec':'ok'}">${rec?'Recurrent':'Not recurrent'}</span></div>
+    ${timelineSVG()}
+    <div class="grid2" style="margin-top:16px">
+      ${meterDots(c.six,2,'In 6 months')}
+      ${meterDots(c.year,3,'In 12 months')}
+    </div>
+    <p class="tiny muted" style="margin-top:12px">Recurrent means 2 in 6 months or 3 in 12 months. NICE NG112 · CKS recurrent UTI</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>Bladder health score</h3>${frozen!==null?`<span class="tag bad">${ic('lock',14,2.2)} Paused</span>`:'<span class="tag warn">Illustrative</span>'}</div>
+    <div class="row" style="gap:18px;align-items:center;flex-wrap:nowrap">
+      ${ringSVG(frozen??sc.total,frozen!==null)}
+      <div style="flex:1;min-width:0">${sparkSVG(scoreHistory())}</div>
+    </div>
+    <div style="margin-top:14px">${partBars(sc.parts)}</div>
+    <p class="tiny muted" style="margin-top:12px">A summary of what you've logged, not a diagnosis or a prediction. Weights are provisional.</p>
+  </section>
+
+  ${plan?`<a class="card" href="#plan" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center">
+     ${artBubble(PAT[plan.primary].icon,PAT[plan.primary].tone).replace('width="120" height="104"','width="78" height="68"')}
+     <div style="flex:1;min-width:0"><span class="eyebrow">Your pattern</span><h3>${PAT[plan.primary].name}${plan.secondary?` <span class="muted" style="font-weight:500">+ ${PAT[plan.secondary].name.toLowerCase()}</span>`:''}</h3>
+     <p class="small muted">${plan.main.length+plan.extra.length} things to ask for</p></div>${ic('arrow',22)}</a>`:''}
+
+  ${next?`<a class="card" href="#follow" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center">
+     <span class="grade A" style="width:46px;height:46px;border-radius:16px">${ic('bell',22)}</span>
+     <div style="flex:1"><span class="eyebrow">Next check-in</span><h3>${next.label}</h3><p class="small muted">${next.due<=iso(today())?'Due now':'Due '+fmt(next.due)}</p></div>${ic('arrow',22)}</a>`:''}
+
+  <section class="stack">
+    <div class="card-head"><h3>Episodes</h3><a class="btn btn-ghost" href="#log">${ic('plus',18)} Add</a></div>
+    ${sortedEps().reverse().map(e=>`<div class="card" style="padding:14px 16px;display:flex;gap:14px;align-items:center">
+      <div style="text-align:center;min-width:46px"><b style="font:800 20px/1 var(--display)" class="num">${new Date(e.date+'T12:00:00').getDate()}</b><div class="tiny muted">${new Date(e.date+'T12:00:00').toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</div></div>
+      <div style="flex:1;min-width:0"><b>${WHERE[e.where]||'Episode'}</b><div class="small muted">${e.abx==='yes'?'Antibiotics'+(e.abxName?': '+esc(e.abxName):''):'No antibiotics'} · Sample ${e.sample==='yes'?'sent':'not sent'} · Settled ${(SETTLED[e.settled]||'?').toLowerCase()}</div></div>
+      <button class="chip-btn" data-act="delEp" data-id="${e.id}" aria-label="Remove episode">Remove</button></div>`).join('')||'<p class="muted small">No episodes yet.</p>'}
+  </section>
+  <p class="tiny muted" style="text-align:center">Navigation, not diagnosis. Every suggestion names the guideline it comes from.</p>
+  </div>`;
+}
+
+/* ---- log ---- */
+function newDraft(){return {id:uid(),date:iso(today()),where:'',sample:'',result:'',abx:'',abxName:'',settled:'',timing:''}}
+function pills(field,map,val){return `<div class="pills" role="radiogroup">${Object.entries(map).map(([k,l])=>`<button type="button" class="pill ${val===k?'on':''}" role="radio" aria-checked="${val===k}" data-act="setDraft" data-f="${field}" data-v="${k}">${esc(l)}</button>`).join('')}</div>`}
+function viewLog(){
+  if(!logDraft) logDraft=newDraft();
+  if(logStep==='safety') return safetyScreen('log');
+  if(logStep==='done') return logDone();
+  const d=logDraft;
+  return `<div class="stack-lg fade">
+   <section class="hero peach">${blob(1,'var(--peach)','70%','-40px',1,.6)}
+     <div class="hero-art" style="justify-content:flex-start">${artBubble('drop','peach')}</div>
+     <span class="eyebrow">Log an episode</span><h1>Tell us about this one.</h1>
+     <p style="margin-top:6px">Takes about a minute. You can add past ones from memory too.</p></section>
+   <div class="card stack-lg">
+    <div class="field"><label for="epDate">When did it start?</label><input type="date" id="epDate" value="${d.date}" max="${iso(today())}" data-act="dateDraft"></div>
+    <div class="field"><span class="lbl">Where did you go first?</span>${pills('where',WHERE,d.where)}</div>
+    <div class="field"><span class="lbl">Was a urine sample sent to a lab?</span>${pills('sample',SAMPLE,d.sample)}</div>
+    ${d.sample==='yes'?`<div class="field"><span class="lbl">What did it show?</span>${pills('result',RESULT,d.result)}</div>`:''}
+    <div class="field"><span class="lbl">Were you given antibiotics?</span>${pills('abx',ABX,d.abx)}
+      ${d.abx==='yes'?`<input type="text" id="abxName" placeholder="Name, if you know it" value="${esc(d.abxName)}" data-act="abxName">`:''}</div>
+    <div class="field"><span class="lbl">Did it settle?</span>${pills('settled',SETTLED,d.settled)}</div>
+    <div class="field"><span class="lbl">Did it start…</span>${pills('timing',TIMING,d.timing)}</div>
+   </div>
+   <button class="btn btn-primary btn-block" data-act="logNext" ${d.date&&d.where&&d.abx?'':'disabled style="opacity:.5"'}>Continue ${ic('arrow',20)}</button>
+   <p class="tiny muted" style="text-align:center">Date, where you went and antibiotics are needed. The rest helps if you know it.</p>
+
+   <section class="card stack">
+     <div class="card-head" style="margin:0"><h3>Already have a test result?</h3><span class="tag ok">Reads any test</span></div>
+     <p class="small muted">Add a result from an NHS culture, Tota, Daye or another lab. We translate it into what to ask for.</p>
+     ${testForm()}
+     ${state.tests.map(t=>`<div class="row small" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:10px"><span><b>${esc(t.source)}</b> · ${esc(TEST_FIND[t.finding])} · ${fmtShort(t.date)}</span><button class="chip-btn" data-act="delTest" data-id="${t.id}">Remove</button></div>`).join('')}
+   </section>
+  </div>`;
+}
+const TEST_SRC=['NHS culture','Tota','Daye','Other lab'];
+const TEST_FIND={none:'No infection found',sensitive:'Infection, usual antibiotics work',resistant:'Infection resistant to usual antibiotics',vaginal:'Thrush or BV found',ph:'Vaginal pH above 4.5'};
+let testDraft={source:'',finding:''};
+function testForm(){
+  return `<div class="pills">${TEST_SRC.map(s=>`<button class="pill ${testDraft.source===s?'on':''}" data-act="testSrc" data-v="${s}">${s}</button>`).join('')}</div>
+  <div class="pills">${Object.entries(TEST_FIND).map(([k,l])=>`<button class="pill ${testDraft.finding===k?'on':''}" data-act="testFind" data-v="${k}">${l}</button>`).join('')}</div>
+  <button class="btn btn-soft" data-act="addTest" ${testDraft.source&&testDraft.finding?'':'disabled style="opacity:.5"'}>Add result</button>`;
+}
+function logDone(){
+  const {c,rec}=statusBlock();
+  return `<div class="stack-lg fade">
+   <section class="hero ${rec?'':'sage'}">${blob(0,rec?'var(--accent)':'var(--sage)','60%','-20px',1.2,.25)}
+    <div class="hero-art">${artBubble(rec?'alert':'sprout',rec?'':'sage')}</div>
+    <span class="eyebrow">Saved</span>
+    ${rec?`<h1>This is now recurrent UTI.</h1><p style="margin-top:8px">"By the NHS's own definition, this is now recurrent UTI. That changes what you should be offered. Let's work out what to ask for."</p>`
+         :`<h1>Logged. Not recurrent yet.</h1><p style="margin-top:8px">${c.year} episode${c.year===1?'':'s'} in 12 months. Recurrent means 2 in 6 months or 3 in a year.</p>`}
+   </section>
+   <div class="card">${meterDots(c.six,2,'In 6 months')}<div style="height:14px"></div>${meterDots(c.year,3,'In 12 months')}</div>
+   ${rec?`<a class="btn btn-primary btn-block" href="#check">${buildPlan()?'Re-run the check':'Work out what to ask for'} ${ic('arrow',20)}</a>`:selfCare()}
+   <a class="btn btn-ghost btn-block" href="#home">Back to my record</a></div>`;
+}
+function selfCare(){
+  return `<div class="card stack"><h3>Self-care basics</h3>
+   ${[['drop','Drink enough fluids, so your urine is pale.'],['heart','Pass urine soon after sex.'],['shield','Avoid spermicides if you can.'],['pill','Paracetamol or ibuprofen can ease pain, if they are suitable for you.'],['flask','A pharmacist can assess an episode under Pharmacy First.']]
+     .map(([i,t])=>`<div class="row" style="flex-wrap:nowrap;align-items:flex-start"><span style="color:var(--sage)">${ic(i,22)}</span><span>${t}</span></div>`).join('')}
+   <p class="tiny muted">NICE CKS UTI (lower) women · self-care</p></div>`;
+}
+
+/* ---- safety ---- */
+let safetySel=new Set();
+function safetyScreen(ctx){
+  return `<div class="stack-lg fade">
+   <section class="hero rose">${blob(1,'var(--rose)','68%','-30px',1,.18)}
+     <span class="eyebrow" style="color:var(--rose)">Safety first</span><h1>Do any of these apply to you now?</h1>
+     <p style="margin-top:6px">Tap any that apply. If none do, carry on.</p></section>
+   <div class="stack">${SAFETY.map(s=>`<button class="flag ${safetySel.has(s.id)?'on':''}" data-act="toggleFlag" data-id="${s.id}" aria-pressed="${safetySel.has(s.id)}"><span class="box"></span><span>${s.q}</span></button>`).join('')}</div>
+   ${safetySel.size
+     ?`<button class="btn btn-urgent btn-block" data-act="safetyDone" data-ctx="${ctx}">Show me where to go ${ic('arrow',20)}</button>`
+     :`<button class="btn btn-primary btn-block" data-act="safetyDone" data-ctx="${ctx}">None of these apply ${ic('arrow',20)}</button>`}
+   <button class="btn btn-ghost btn-block" data-act="worried" data-ctx="${ctx}">I'm worried about how I feel</button>
+  </div>`;
+}
+function urgentView(){
+  const f=state.redFlag;
+  const items=f.ids.map(id=>id==='worried'?{q:'You told us you are worried',act:'Contact your GP today, or 111 if the surgery is closed.',why:'Your own concern always counts.',ref:'Second Episode safety rule',level:3}:SAFETY.find(s=>s.id===id));
+  const top=Math.max(...items.map(i=>i.level));
+  return `<div class="stack-lg fade">
+   <section class="hero rose">${blob(0,'var(--rose)','64%','-30px',1.1,.2)}
+    <div class="hero-art">${artBubble('alert','rose')}</div>
+    <span class="eyebrow" style="color:var(--rose)">${LEVEL_TXT[top]}</span>
+    <h1>${top>=1?'This needs a proper assessment, not an app.':'Your GP should lead your care.'}</h1>
+    <p style="margin-top:8px">${top>=3?'Please contact your GP today, or 111 if the surgery is closed. If you feel very unwell or confused, call 999.':top>=2?'Please book a GP appointment within the week.':top>=1?'Please book a routine GP appointment.':'You can still log episodes and show your summary.'}</p></section>
+   <div class="card stack"><h3>What to tell them</h3>
+    ${items.map(i=>`<div class="ask"><span class="n" style="background:var(--rose-soft);color:var(--rose)">${ic('alert',16,2)}</span><div><b>${esc(i.q)}</b><p class="small" style="margin-top:4px">${esc(i.act)} ${esc(i.why)}</p><span class="ref">${esc(i.ref)}</span></div></div>`).join('')}
+   </div>
+   <p class="small muted">Prevention suggestions stay hidden until a clinician has looked at this. That is on purpose: this tool can raise urgency but never lower it.</p>
+   <a class="btn btn-soft btn-block" href="#card">Open my summary for the appointment</a>
+   <button class="btn btn-ghost btn-block" data-act="clearFlag">A clinician has seen me</button></div>`;
+}
+
+/* ---- assessment ---- */
+function visibleQs(a){return QUESTIONS.filter(q=>!(q.skip&&q.skip(a)))}
+function viewCheck(){
+  if(state.redFlag) return urgentView();
+  const {rec}=statusBlock();
+  if(!flow){
+    return `<div class="stack-lg fade">
+     <section class="hero">${blob(0,'var(--peach)','60%','-40px',1.2,.5)}${blob(1,'var(--accent)','-20%','55%',.8,.18)}
+      <div class="hero-art">${artBubble('lens','')}</div>
+      <span class="eyebrow">The pattern check</span><h1>Let's work out what's driving it.</h1>
+      <p style="margin-top:8px">A quick safety check, then 10 short questions. About 3 minutes. One tap per question.</p></section>
+     ${rec?'':`<div class="banner"><span>${ic('alert',20)}</span><div>You're not at the recurrent threshold yet, so this is optional. The self-care basics below are the main thing for now.</div></div>`}
+     <div class="grid2">
+      ${[['shield','Safety first','Red flags are checked before anything else'],['list','10 questions','Plain words, one per screen'],['flower','Your pattern','What is likely to be driving it'],['check','Your ask-list','With the NICE reference for each']].map(([i,h,p])=>`<div class="stat"><span style="color:var(--accent)">${ic(i,26)}</span><h3 style="margin-top:8px;font-size:16px">${h}</h3><p class="small muted">${p}</p></div>`).join('')}
+     </div>
+     <button class="btn btn-primary btn-block" data-act="startCheck">${state.assessment?'Re-run the check':'Start the check'} ${ic('arrow',20)}</button>
+     ${rec?'':selfCare()}</div>`;
+  }
+  if(flow.step==='safety') return safetyScreen('check');
+  const qs=visibleQs(flow.answers), q=qs[flow.i];
+  let pre='';
+  if(q.id==='d7'){const n=abxCount12(iso(today()));pre=`<div class="banner" style="background:var(--accent-soft)"><span>${ic('pill',20)}</span><div>From your log: <b>${n} course${n===1?'':'s'}</b> in the last 12 months. Confirm or change it.</div></div>`}
+  if(q.id==='d8'&&state.tests.some(t=>t.finding==='none')) pre=`<div class="banner" style="background:var(--accent-soft)"><span>${ic('flask',20)}</span><div>Your test result showed no infection, so we've picked "Yes".</div></div>`;
+  if(q.id==='d10'&&state.tests.some(t=>t.finding==='resistant')) pre=`<div class="banner" style="background:var(--accent-soft)"><span>${ic('bug',20)}</span><div>Your test result showed a resistant bug, so we've picked "Yes".</div></div>`;
+  const val=flow.answers[q.id];
+  return `<div class="stack-lg fade" key="${q.id}">
+   <div class="row" style="flex-wrap:nowrap"><button class="chip-btn" data-act="qBack" aria-label="Back">${ic('back',16)}</button>
+     <div class="progress" style="flex:1"><span style="width:${(flow.i+1)/qs.length*100}%"></span></div>
+     <span class="small num muted">${flow.i+1}/${qs.length}</span></div>
+   <div class="row" style="flex-wrap:nowrap;gap:16px;align-items:center">
+     <div style="flex:none">${artBubble(q.icon,['peach','sage','amber','rose',''][flow.i%5]).replace('width="120" height="104"','width="92" height="80"')}</div>
+     <h2 style="flex:1;min-width:0">${q.q}</h2></div>
+   ${pre}
+   <div class="opts" role="radiogroup">${q.opts.map(([k,l])=>`<button class="opt ${val===k?'on':''}" role="radio" aria-checked="${val===k}" data-act="answer" data-q="${q.id}" data-v="${k}"><span class="dot"></span>${esc(l)}</button>`).join('')}</div>
+   <p class="small muted" style="display:flex;gap:8px"><span style="color:var(--accent)">${ic('flower',18)}</span>${q.why}</p>
+  </div>`;
+}
+
+/* ---- plan ---- */
+const EVIDENCE=[
+ ['A','Vaginal oestrogen','Roughly halves repeat infections in women after the menopause. Sold over the counter as Gina for women 50 and over with no period for a year, since 2022.','NICE NG112 · CKS recurrent UTI'],
+ ['A','An extra 1.5 litres of water a day','In a randomised trial of women who drank little, adding 1.5 litres a day roughly halved repeat infections.','Hooton et al., JAMA Intern Med 2018'],
+ ['A','Methenamine hippurate','The ALTAR trial found it worked as well as daily preventive antibiotics, without building resistance. Added to NICE in 2024.','ALTAR, BMJ 2022 · NICE NG112 2024'],
+ ['B','Cranberry','A modest reduction in repeat infections for some groups. Fine to try, not a must.','Cochrane review 2023'],
+ ['X','D-mannose','A large UK primary care trial found it did not reduce repeat infections.','MERIT trial, JAMA Intern Med 2024'],
+ ['X','Oral probiotics','No clear benefit for preventing UTIs in the trials so far, which are small and low quality.','Cochrane review']
+];
+function evidenceCard(){
+  return `<section class="card"><div class="card-head"><h3>Only what the evidence supports</h3></div>
+   <p class="small muted" style="margin-bottom:8px">A = strong evidence · B = some evidence · X = we don't recommend it</p>
+   ${EVIDENCE.map(([g,n,w,r])=>`<details class="ev"><summary><span class="grade ${g}">${g}</span><span>${n}</span><span class="why">Why?</span></summary><p>${w}<br><span class="ref">${r}</span></p></details>`).join('')}
+   <p class="tiny muted" style="margin-top:10px">Prescription items go to a clinician, never to a shop.</p></section>`;
+}
+function askList(list,start=1,paper=false){
+  return list.map((a,i)=>`<div class="ask"><span class="n">${start+i}</span><div style="flex:1;min-width:0"><span>${esc(a.t)}</span>${a.otc&&!paper?` <span class="tag ok" style="margin-left:4px">Over the counter</span>`:''}<br><span class="ref">${esc(a.ref)}</span></div>${a.g&&!paper?`<span class="grade ${a.g}" title="Evidence grade ${a.g}">${a.g}</span>`:''}</div>`).join('');
+}
+function viewPlan(){
+  if(state.redFlag) return urgentView();
+  const p=buildPlan();
+  if(!p) return `<div class="stack-lg fade"><section class="hero">${blob(0,'var(--peach)','60%','-30px',1.1,.5)}<div class="hero-art">${artBubble('list','')}</div><span class="eyebrow">Your plan</span><h1>No ask-list yet.</h1><p style="margin-top:8px">Run the pattern check to get your list of things to ask for.</p></section>
+    <a class="btn btn-primary btn-block" href="#check">Start the check ${ic('arrow',20)}</a>${evidenceCard()}</div>`;
+  const P=PAT[p.primary];
+  return `<div class="stack-lg fade">
+   <section class="hero ${P.tone}">${blob(0,`var(--${P.tone||'accent'})`,'58%','-40px',1.2,.35)}
+    <div class="hero-art">${artBubble(P.icon,P.tone)}</div>
+    <span class="eyebrow">Your pattern</span><h1>${P.name}</h1>
+    ${p.secondary?`<p class="small" style="margin-top:6px"><b>Also:</b> ${PAT[p.secondary].name.toLowerCase()}</p>`:''}
+    <p style="margin-top:10px">"${P.say}"</p></section>
+
+   <section class="card"><div class="card-head"><h3>How your answers sorted</h3></div>${patternBars(p.s)}</section>
+
+   <section class="card"><div class="card-head"><h3>What to ask for</h3><span class="small muted">${p.main.length+p.extra.length} items</span></div>
+     ${askList(p.main)}
+     ${p.extra.length?`<p class="eyebrow" style="margin-top:14px;margin-bottom:6px">Also worth raising</p>${askList(p.extra,p.main.length+1)}`:''}
+   </section>
+   <a class="btn btn-primary btn-block" href="#card">Show this at the counter ${ic('arrow',20)}</a>
+   ${PAID?`<div class="grid2">
+      <a href="#gp" class="card" style="text-decoration:none;color:inherit"><span style="color:var(--accent)">${ic('heart',26)}</span><h3 style="font-size:16px;margin-top:6px">Talk it through with a GP</h3><p class="tiny muted">Video or phone, with your record shared</p></a>
+      <a href="#shop" class="card" style="text-decoration:none;color:inherit"><span style="color:var(--accent)">${ic('bag',26)}</span><h3 style="font-size:16px;margin-top:6px">Get the kit</h3><p class="tiny muted">Card, sample pot and signposts, posted</p></a></div>`
+    :`<a class="card" href="https://www.nhs.uk/nhs-app/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center"><span style="color:var(--accent)">${ic('heart',26)}</span><span style="flex:1"><b>Book with your own GP</b><span class="tiny muted" style="display:block">Through the NHS App, free</span></span>${ic('arrow',20)}</a>`}
+   ${evidenceCard()}
+   <p class="tiny muted" style="text-align:center">Generated from your own answers to support a conversation. Not a diagnosis. Guideline section numbers to be checked against the current versions before patient use.</p>
+  </div>`;
+}
+
+/* ---- summary card ---- */
+function summaryText(){
+  const p=buildPlan(), since=recurrentSince();
+  let s='SECOND EPISODE · Summary for my appointment\n\n';
+  s+=since?`Meets the NHS definition of recurrent UTI since ${fmt(since)}.\n\n`:'Not yet at the recurrent UTI threshold.\n\n';
+  s+='Episodes:\n'+sortedEps().map(e=>`- ${fmt(e.date)}: ${WHERE[e.where]||''}; sample ${e.sample==='yes'?'sent':'not sent'}; ${e.abx==='yes'?'antibiotics'+(e.abxName?' ('+e.abxName+')':''):'no antibiotics'}; settled ${(SETTLED[e.settled]||'?').toLowerCase()}`).join('\n')+'\n\n';
+  s+=state.redFlag?'Red flag: '+state.redFlag.ids.map(id=>id==='worried'?'I am worried':SAFETY.find(x=>x.id===id).q).join('; ')+'\n\n':'Red flags: none declared.\n\n';
+  if(p&&!state.redFlag){s+=`I think ${PAT[p.primary].one}.\n\nI would like to discuss:\n`+[...p.main,...p.extra].map((a,i)=>`${i+1}. ${a.t} (${a.ref})`).join('\n')+'\n\n'}
+  s+='Generated from the patient\'s own answers to support a conversation. Not a diagnosis.';
+  return s;
+}
+function viewCard(){
+  const p=buildPlan(), since=recurrentSince();
+  return `<div class="stack-lg fade">
+   <div><span class="eyebrow">Show this at the counter or desk</span><h2 style="margin-top:4px">Your summary</h2></div>
+   <article class="paper">
+     <div class="row" style="justify-content:space-between"><span class="row" style="gap:8px;font:800 16px var(--display)"><svg width="22" height="22" viewBox="0 0 40 40"><circle cx="15" cy="20" r="11" fill="#EFA98A"/><circle cx="25" cy="20" r="11" fill="#8E3B68" opacity=".85"/></svg>Second Episode</span><span class="tiny muted">${fmt(iso(today()))}</span></div>
+     <div class="rule"></div>
+     <h2 style="font-size:22px">${since?`Meets NHS definition of recurrent UTI since ${fmt(since)}`:'Not yet at the recurrent UTI threshold'}</h2>
+     <div style="margin-top:14px;overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:14px" class="num">
+       <thead><tr style="text-align:left;color:#6A5866"><th style="padding:6px 8px 6px 0">Date</th><th style="padding:6px 8px">Seen</th><th style="padding:6px 8px">Sample</th><th style="padding:6px 8px">Antibiotic</th><th style="padding:6px 0 6px 8px">Settled</th></tr></thead>
+       <tbody>${sortedEps().map(e=>`<tr style="border-top:1px solid #EBDFE4"><td style="padding:7px 8px 7px 0;white-space:nowrap">${fmtShort(e.date)} ${new Date(e.date+'T12:00:00').getFullYear()}</td><td style="padding:7px 8px">${WHERE[e.where]||''}</td><td style="padding:7px 8px">${e.sample==='yes'?(RESULT[e.result]||'Sent'):'Not sent'}</td><td style="padding:7px 8px">${e.abx==='yes'?esc(e.abxName||'Yes'):'No'}</td><td style="padding:7px 0 7px 8px">${SETTLED[e.settled]||'?'}</td></tr>`).join('')}</tbody>
+      </table></div>
+     <div class="rule"></div>
+     <p><b>Red flags:</b> ${state.redFlag?`<span style="color:#B2304A;font-weight:700">${state.redFlag.ids.map(id=>id==='worried'?'I am worried about how I feel':SAFETY.find(x=>x.id===id).q).map(esc).join('; ')}</span>`:'none declared'}</p>
+     ${state.tests.length?`<p style="margin-top:6px"><b>Tests:</b> ${state.tests.map(t=>`${esc(t.source)}, ${TEST_FIND[t.finding].toLowerCase()} (${fmtShort(t.date)})`).join('; ')}</p>`:''}
+     ${p&&!state.redFlag?`<div class="rule"></div>
+       <p style="font-size:17px">I think ${PAT[p.primary].one}.</p>
+       <p style="margin-top:14px;font-weight:800;font-family:var(--display);font-size:18px">I would like to discuss</p>
+       <div style="margin-top:8px">${askList([...p.main,...p.extra],1,true)}</div>`:''}
+     <div class="rule"></div>
+     <p class="tiny muted">Generated from the patient's own answers to support a conversation. Not a diagnosis.</p>
+   </article>
+   <button class="btn btn-primary btn-block" data-act="copy">${ic('copy',20)} Copy as text</button>
+   <textarea id="copyArea" rows="6" readonly hidden>${esc(summaryText())}</textarea>
+  </div>`;
+}
+
+/* ---- follow-up ---- */
+const FU=[['2w',14,'2-week check-in','Did you get to discuss the list? What was started?'],['6w',42,'6-week check-in','Any new episodes? Any side effects from what was started?'],['3m',91,'3-month review','We re-run the count and see if prevention is working.']];
+function nextFollowup(){
+  if(!state.assessment) return null;
+  for(const [k,d,l] of FU) if(!state.followups[k]) return {k,label:l,due:addDays(state.assessment.date,d)};
+  return null;
+}
+const FU_OPTS={started:'Started',discussed:'Discussed, not started',declined:'I said no',notdiscussed:'Not discussed'};
+let fuDraft={};
+function viewFollow(){
+  const p=buildPlan();
+  if(!p) return `<div class="stack-lg fade"><section class="hero sage">${blob(0,'var(--sage)','60%','-30px',1.1,.3)}<div class="hero-art">${artBubble('bell','sage')}</div><span class="eyebrow">Follow-up</span><h1>Nothing to follow up yet.</h1><p style="margin-top:8px">Once you have an ask-list, we check in at 2 weeks, 6 weeks and 3 months.</p></section><a class="btn btn-primary btn-block" href="#check">Start the check</a></div>`;
+  const t=iso(today()), base=state.assessment.date;
+  const nx=nextFollowup();
+  return `<div class="stack-lg fade">
+   <section class="hero sage">${blob(1,'var(--sage)','66%','-30px',1,.3)}
+     <span class="eyebrow" style="color:var(--sage)">Follow-up</span><h1>Is it working?</h1>
+     <p style="margin-top:6px">Short check-ins after your ask-list. Every new episode re-runs the safety check.</p></section>
+   <section class="card">
+     <div style="position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center">
+      <div style="position:absolute;left:12.5%;right:12.5%;top:17px;height:3px;background:var(--line);border-radius:3px"></div>
+      ${[['plan',0,'Ask-list'],...FU.map(([k,d,l])=>[k,d,l.replace(' check-in','').replace(' review','')])].map(([k,d,l])=>{
+        const done=k==='plan'||state.followups[k];
+        return `<div style="position:relative"><div style="width:36px;height:36px;margin:0 auto;border-radius:50%;display:grid;place-items:center;${done?'background:var(--sage);color:#fff':'background:var(--surface);border:2.5px solid var(--line);color:var(--muted)'}">${done?ic('check',18,2.2).replace(ICON.check,'<path d="m6 12.5 4 4L18 8"/>'):''}</div>
+        <div class="small" style="font-weight:700;margin-top:6px">${l}</div><div class="tiny muted">${fmtShort(addDays(base,d))}</div></div>`}).join('')}
+     </div></section>
+   ${nx?followForm(nx,p):`<div class="card"><h3>All check-ins done</h3><p class="small muted">Log any new episode and we'll re-sort your pattern.</p></div>`}
+   ${Object.entries(state.followups).map(([k,f])=>`<section class="card"><div class="card-head"><h3>${FU.find(x=>x[0]===k)[2]}</h3><span class="tiny muted">${fmt(f.date)}</span></div>
+      ${f.asks?Object.entries(f.asks).map(([id,v])=>{const a=askBank(state.assessment.answers)[id];return a?`<div class="row" style="justify-content:space-between;flex-wrap:nowrap;padding:6px 0;border-top:1px solid var(--line)"><span class="small" style="min-width:0">${esc(a.t.split('.')[0])}</span><span class="tag ${v==='started'?'ok':v==='notdiscussed'?'bad':'warn'}" style="flex:none">${FU_OPTS[v]}</span></div>`:''}).join(''):''}
+      ${f.newEp!==undefined?`<p class="small">New episodes: <b>${f.newEp?'Yes':'No'}</b> · Side effects: <b>${f.side?'Yes':'No'}</b></p>`:''}
+      ${f.msg?`<p class="small">${esc(f.msg)}</p>`:''}
+      ${f.note?`<p class="small muted" style="margin-top:8px">"${esc(f.note)}"</p>`:''}</section>`).join('')}
+  </div>`;
+}
+function followForm(nx,p){
+  const due=nx.due<=iso(today());
+  const head=`<div class="card-head"><h3>${nx.label}</h3><span class="tag ${due?'rec':'warn'}">${due?'Due now':'Due '+fmtShort(nx.due)}</span></div>`;
+  if(nx.k==='2w'){
+    const all=[...p.main,...p.extra];
+    return `<section class="card stack">${head}<p class="small muted">${FU[0][3]}</p>
+     ${all.map(a=>`<div class="stack" style="gap:8px;border-top:1px solid var(--line);padding-top:12px"><span class="small" style="font-weight:600">${esc(a.t)}</span>
+       <div class="pills">${Object.entries(FU_OPTS).map(([k,l])=>`<button class="pill ${fuDraft[a.id]===k?'on':''}" data-act="fuSet" data-id="${a.id}" data-v="${k}" style="padding:8px 12px;font-size:14px">${l}</button>`).join('')}</div></div>`).join('')}
+     <textarea id="fuNote" rows="2" placeholder="Anything to remember? (optional)"></textarea>
+     <button class="btn btn-primary btn-block" data-act="fuSave" data-k="2w">Save check-in</button></section>`;
+  }
+  if(nx.k==='6w') return `<section class="card stack">${head}
+     <div class="field"><span class="lbl">Any new episodes since your ask-list?</span><div class="pills">${['yes','no'].map(v=>`<button class="pill ${fuDraft.newEp===v?'on':''}" data-act="fuSet" data-id="newEp" data-v="${v}">${v==='yes'?'Yes':'No'}</button>`).join('')}</div></div>
+     <div class="field"><span class="lbl">Any side effects from what was started?</span><div class="pills">${['yes','no'].map(v=>`<button class="pill ${fuDraft.side===v?'on':''}" data-act="fuSet" data-id="side" data-v="${v}">${v==='yes'?'Yes':'No'}</button>`).join('')}</div></div>
+     <button class="btn btn-primary btn-block" data-act="fuSave" data-k="6w">Save check-in</button></section>`;
+  const rec=isRecurrentAt(iso(today()));
+  return `<section class="card stack">${head}<p class="small">${rec?'You still meet the recurrent definition. If prevention is in place, we will add a referral ask to your list.':'You no longer meet the recurrent definition. That is a good sign.'}</p>
+    <button class="btn btn-primary btn-block" data-act="fuSave" data-k="3m">Run the 3-month review</button></section>`;
+}
+
+/* ---------------- urogenital front door ---------------- */
+const L={
+ clinic:['Find a sexual health clinic','https://www.nhs.uk/service-search/sexual-health/find-a-sexual-health-clinic','NHS'],
+ stiFind:['Find STI testing and treatment near you','https://www.nhs.uk/nhs-services/sexual-health-services/find-sti-testing-and-treatment/','NHS'],
+ sh24:['Order a free home STI test kit','https://sh24.org.uk/orders/sti-test-kit/new','SH:24, in partnership with the NHS. Free in many areas of England, depending on your postcode'],
+ hiv:['Order a free HIV test','https://www.freetesting.hiv','National HIV testing, free in many areas of England'],
+ chlam:['Free chlamydia home test kits for under 25s','https://www.nhs.uk/service-search/sexual-health-services/find-free-chlamydia-home-test-kits-for-under-25s','NHS'],
+ ec:['Find emergency contraception','https://www.nhs.uk/service-search/sexual-health-services/find-emergency-contraception/','NHS · pharmacies and clinics'],
+ sarc:['Find a sexual assault referral centre','https://www.nhs.uk/service-search/sexual-health-services/find-a-rape-and-sexual-assault-referral-centre','NHS'],
+ stiInfo:['Sexually transmitted infections','https://www.nhs.uk/conditions/sexually-transmitted-infections-stis/','NHS']
+};
+const link=(k,primary)=>{const [t,u,s]=L[k];return `<a class="card" href="${u}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center;${primary?'border-color:var(--accent);border-width:1.5px':''}">
+  <span class="grade" style="width:44px;height:44px;border-radius:14px;background:${primary?'var(--accent)':'var(--accent-soft)'};color:${primary?'var(--accent-ink)':'var(--accent)'}">${ic('arrow',20,2)}</span>
+  <span style="flex:1;min-width:0"><b>${t}</b><span class="tiny muted" style="display:block">${s}</span></span></a>`};
+
+function viewStart(){
+  const {c,rec}=statusBlock();
+  const tiles=[
+   ['uti','drop','peach','Burning, or needing to wee often','Urine infections (UTIs)'],
+   ['vaginal','flower','rose','Itching, discharge or a smell','Thrush, BV and more'],
+   ['sti','shield','sage','Worried about an STI','Free tests and clinics'],
+   ['dryness','moon','amber','Dryness, or pain during sex','Menopause and hormones']];
+  return `<div class="stack-lg fade">
+   <section class="hero">${blob(0,'var(--peach)','58%','-50px',1.3,.55)}${blob(1,'var(--accent)','-25%','60%',.9,.16)}${blob(0,'var(--sage)','80%','70%',.5,.35)}
+     <div class="stack" style="max-width:80%">
+      <span class="eyebrow">Urogenital health</span>
+      <h1>Your bladder and vaginal health, in one place.</h1>
+      <p>Tell us what's bothering you. We'll tell you what women in your situation are usually offered, and where to go.</p>
+     </div></section>
+   <div><h2 style="font-size:21px">What's bothering you today?</h2></div>
+   <div class="grid2">${tiles.map(([h,i,tone,t,s])=>`<a href="#${h}" class="card" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px;padding:14px;background:var(--${tone}-soft);border-color:transparent">
+      <span style="margin:-6px 0 -4px -8px">${artBubble(i,tone).replace('width="120" height="104"','width="84" height="72"')}</span>
+      <b style="font:700 16.5px/1.25 var(--display)">${t}</b><span class="tiny muted">${s}</span></a>`).join('')}</div>
+   ${state.episodes.length?`<a href="#home" class="card" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center">
+     <div style="flex:1"><span class="eyebrow">Your UTI record</span><h3>${c.year} episode${c.year===1?'':'s'} this year</h3><p class="small muted">${rec?'Meets the NHS definition of recurrent UTI':'Not recurrent'}</p></div>
+     <span class="tag ${rec?'rec':'ok'}">${rec?'Recurrent':'Tracking'}</span></a>`:''}
+   ${PAID&&upcomingAppt()?apptCard(upcomingAppt()):''}
+   <a href="#prevent" class="card" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center;background:var(--sage-soft);border-color:transparent">
+     ${artBubble('sprout','sage').replace('width="120" height="104"','width="70" height="60"')}
+     <div style="flex:1;min-width:0"><span class="eyebrow" style="color:var(--sage)">Prevention</span><h3>Small habits, fewer infections</h3><p class="small muted">Bladder, vaginal and pelvic floor health</p></div>${ic('arrow',22)}</a>
+   ${PAID?`<div class="grid2">
+     <a href="#gp" class="card" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px"><span style="color:var(--accent)">${ic('heart',28)}</span><b style="font:700 16px/1.25 var(--display)">Book a GP appointment</b><span class="tiny muted">Video or phone · from ${money(95)}</span></a>
+     <a href="#shop" class="card" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px"><span style="color:var(--accent)">${ic('bag',28)}</span><b style="font:700 16px/1.25 var(--display)">Order a home kit</b><span class="tiny muted">Delivered · from ${money(29)}</span></a></div>`:''}
+   <div class="banner red"><span>${ic('alert',20)}</span><div><b>Get same-day care</b> (your GP, or 111) if you have blood in your urine, a fever, pain in your back or side, or severe pain low in your tummy. Call 999 if you feel very unwell.</div></div>
+   <p class="tiny muted" style="text-align:center">Navigation, not diagnosis. Sexual health clinics are free and confidential, and you don't need a GP referral.</p>
+  </div>`;
+}
+
+/* STI layer: answers are kept in memory only, never saved */
+const STI_FLAGS=[
+ {id:'pain',q:'Severe pain low in my tummy, with a fever or feeling very unwell',act:'Get same-day care: your GP, 111, or A&E if it is severe.',why:'This can be a sign of pelvic inflammatory disease, which needs prompt treatment.',ref:'NHS · pelvic inflammatory disease'},
+ {id:'preg',q:'I could be pregnant and have tummy pain or bleeding',act:'Call 111 or go to A&E now.',why:'Pain or bleeding in early pregnancy needs checking the same day.',ref:'NHS · ectopic pregnancy'},
+ {id:'hiv',q:'I might have been exposed to HIV in the last 72 hours',act:'Go to a sexual health clinic today, or A&E if it is closed. Ask about PEP.',why:'PEP is medicine that can stop HIV taking hold. It must be started within 72 hours, and the sooner the better.',ref:'BHIVA/BASHH PEP guideline'},
+ {id:'assault',q:"Something happened that I didn't agree to",act:'A sexual assault referral centre (SARC) can help, whenever it happened. You do not have to report to the police. Call 999 if you are in danger now.',why:'They offer medical care, emergency contraception, STI and HIV medicine, and support.',ref:'NHS SARC services',link:'sarc'}
+];
+const STI_Q=[
+ {id:'risk',icon:'heart',q:'Have you had sex without a condom with a new partner, or a partner who may have other partners?',opts:[['yes','Yes'],['no','No'],['unsure','Not sure']]},
+ {id:'when',icon:'cake',q:'When was the most recent time?',opts:[['lt3','In the last 3 days'],['lt5','3 to 5 days ago'],['lt7w','5 days to 7 weeks ago'],['gt7w','More than 7 weeks ago']],skip:a=>a.risk==='no'},
+ {id:'sym',icon:'lens',multi:true,q:'Do you have any of these?',opts:[['discharge','Unusual discharge'],['burn','Pain or burning when I wee'],['bleed','Bleeding between periods or after sex'],['pelvic','Pain in my lower tummy or during sex'],['sores','Sores, blisters, lumps or warts around my genitals or bottom'],['itch','Itching']]},
+ {id:'partner',icon:'shield',q:'Has a partner told you they have an STI?',opts:[['yes','Yes'],['no','No'],['unsure','Not sure']]},
+ {id:'preg',icon:'moon',q:'Could you get pregnant from this?',opts:[['yes','Yes'],['no','No'],['unsure','Not sure']],skip:a=>!(a.when==='lt3'||a.when==='lt5')},
+ {id:'age',icon:'cake',q:'Are you under 25?',opts:[['yes','Yes'],['no','No']]}
+];
+let sti=null;
+function stiVisible(){return STI_Q.filter(q=>!(q.skip&&q.skip(sti.a)))}
+function viewSti(){
+  if(!sti||sti.step==='intro') return `<div class="stack-lg fade">
+   <section class="hero sage">${blob(0,'var(--sage)','60%','-40px',1.2,.35)}${blob(1,'var(--peach)','-20%','62%',.8,.35)}
+    <div class="hero-art">${artBubble('shield','sage')}</div>
+    <span class="eyebrow" style="color:var(--sage)">Sexual health</span><h1>Worried about an STI?</h1>
+    <p style="margin-top:8px">A few private questions, then we'll show you the right free NHS option: a home test kit, or a clinic.</p></section>
+   <div class="grid2">
+    ${[['lock','Private','Your answers here are never saved'],['shield','Free','NHS clinics and many home kits cost nothing'],['heart','No referral','Go straight to a clinic, no GP needed'],['flask','The right test','Home kit or clinic, depending on your answers']].map(([i,h,p])=>`<div class="stat"><span style="color:var(--sage)">${ic(i,26)}</span><h3 style="margin-top:8px;font-size:16px">${h}</h3><p class="small muted">${p}</p></div>`).join('')}
+   </div>
+   <button class="btn btn-primary btn-block" data-act="stiStart">Start ${ic('arrow',20)}</button>
+   <a class="btn btn-ghost btn-block" href="#start">Back</a></div>`;
+  if(sti.step==='safety') return `<div class="stack-lg fade">
+   <section class="hero rose">${blob(1,'var(--rose)','68%','-30px',1,.18)}
+     <span class="eyebrow" style="color:var(--rose)">Safety first</span><h1>Does any of this apply to you?</h1>
+     <p style="margin-top:6px">Tap any that apply. If none do, carry on.</p></section>
+   <div class="stack">${STI_FLAGS.map(s=>`<button class="flag ${sti.flags.has(s.id)?'on':''}" data-act="stiFlag" data-id="${s.id}" aria-pressed="${sti.flags.has(s.id)}"><span class="box"></span><span>${s.q}</span></button>`).join('')}</div>
+   <button class="btn ${sti.flags.size?'btn-urgent':'btn-primary'} btn-block" data-act="stiSafetyDone">${sti.flags.size?'Continue':'None of these apply'} ${ic('arrow',20)}</button></div>`;
+  if(sti.step==='result') return stiResult();
+  const qs=stiVisible(), q=qs[sti.i], val=sti.a[q.id];
+  const sel=q.multi?(val||[]):null;
+  return `<div class="stack-lg fade">
+   <div class="row" style="flex-wrap:nowrap"><button class="chip-btn" data-act="stiBack" aria-label="Back">${ic('back',16)}</button>
+     <div class="progress" style="flex:1"><span style="width:${(sti.i+1)/qs.length*100}%;background:var(--sage)"></span></div>
+     <span class="small num muted">${sti.i+1}/${qs.length}</span></div>
+   <div class="row" style="flex-wrap:nowrap;gap:16px;align-items:center">
+     <div style="flex:none">${artBubble(q.icon,'sage').replace('width="120" height="104"','width="92" height="80"')}</div>
+     <h2 style="flex:1;min-width:0">${q.q}</h2></div>
+   ${q.multi
+     ?`<p class="small muted">Tap all that apply.</p><div class="stack">${q.opts.map(([k,l])=>`<button class="flag soft ${sel.includes(k)?'on':''}" data-act="stiMulti" data-v="${k}" aria-pressed="${sel.includes(k)}"><span class="box"></span><span>${l}</span></button>`).join('')}</div>
+       <button class="btn btn-primary btn-block" data-act="stiNext">${sel.length?'Continue':'None of these'} ${ic('arrow',20)}</button>`
+     :`<div class="opts" role="radiogroup">${q.opts.map(([k,l])=>`<button class="opt ${val===k?'on':''}" role="radio" aria-checked="${val===k}" data-act="stiAnswer" data-q="${q.id}" data-v="${k}"><span class="dot"></span>${l}</button>`).join('')}</div>`}
+  </div>`;
+}
+function stiResult(){
+  const a=sti.a, sym=a.sym||[], flags=STI_FLAGS.filter(f=>sti.flags.has(f.id));
+  const risk=a.risk!=='no', partner=a.partner==='yes';
+  const seeClinic=partner||sym.some(s=>['sores','pelvic','bleed','discharge'].includes(s))||(risk&&sym.length>0);
+  const early=a.when&&a.when!=='gt7w';
+  const needEC=(a.when==='lt3'||a.when==='lt5')&&a.preg!=='no';
+  const out=[];
+  if(flags.length) out.push(`<section class="card stack" style="border-color:var(--rose)"><div class="card-head" style="margin:0"><h3>Do this first</h3><span class="tag bad">Today</span></div>
+    ${flags.map(f=>`<div class="ask"><span class="n" style="background:var(--rose-soft);color:var(--rose)">${ic('alert',16,2)}</span><div><b>${esc(f.act)}</b><p class="small" style="margin-top:4px">${esc(f.why)}</p><span class="ref">${esc(f.ref)}</span></div></div>`).join('')}
+    ${flags.some(f=>f.link)?link('sarc',true):''}${sti.flags.has('hiv')?link('clinic',true):''}</section>`);
+  if(needEC) out.push(`<section class="card stack"><div class="card-head" style="margin:0"><h3>Emergency contraception</h3><span class="tag warn">Time matters</span></div>
+    <p class="small">If you don't want to get pregnant, emergency contraception works best the sooner you take it. Depending on the type, it works up to 5 days after sex. It is free from sexual health clinics, and many pharmacies give it free too.</p><span class="ref">FSRH emergency contraception guideline</span>${link('ec',true)}</section>`);
+  let head,body,tone='sage',icon='shield';
+  if(seeClinic){
+    head='A clinic is the best next step.';
+    body=partner?'When a partner has an STI, women are usually offered testing and often treatment at the same visit, even before results come back.':'Women with these symptoms are usually advised to be seen at a sexual health clinic rather than only doing a home test, so they can be examined and treated the same day if needed.';
+  } else if(risk){
+    head='A free home test kit suits you.';
+    body='With no symptoms, women in your situation are usually offered a home test kit for chlamydia, gonorrhoea, HIV and syphilis. It comes in a plain package and results come by text.';
+    icon='flask';
+  } else {
+    head='Your answers don\'t point to an STI risk.';
+    body='Testing is still free and confidential if you\'d like peace of mind.';
+    tone='';icon='sprout';
+  }
+  out.splice(flags.length?1:0,0,`<section class="hero ${tone}">${blob(0,`var(--${tone||'accent'})`,'60%','-40px',1.2,.3)}
+     <div class="hero-art">${artBubble(icon,tone)}</div><span class="eyebrow" style="${tone?'color:var(--sage)':''}">Your next step</span><h1>${head}</h1><p style="margin-top:8px">${body}</p></section>`);
+  const opts=[];
+  if(seeClinic){opts.push(link('clinic',true),link('stiFind'))}
+  else if(risk){opts.push(link('sh24',true),link('hiv'));if(a.age==='yes')opts.push(link('chlam'));opts.push(link('clinic'))}
+  else opts.push(link('sh24'),link('clinic'));
+  out.push(`<section class="stack"><h3>Where to go</h3>${opts.join('')}</section>`);
+  if(early&&risk) out.push(`<div class="banner" style="background:var(--sage-soft)"><span>${ic('cycle',20)}</span><div>Some STIs take time to show on a test. The NHS advises that, with no symptoms, tests are most reliable about <b>7 weeks</b> after sex. A clinic may test you now and ask you to test again later.</div></div>`);
+  if(sym.includes('burn')) out.push(`<div class="banner" style="background:var(--accent-soft)"><span>${ic('drop',20)}</span><div>Burning when you wee can be chlamydia or gonorrhoea, not only a UTI. If you're offered a urine test, ask for an STI test too. <a href="#home" style="color:var(--accent);font-weight:700">Log it as a UTI episode</a></div></div>`);
+  if(sym.includes('itch')&&!seeClinic) out.push(`<a class="btn btn-soft btn-block" href="#vaginal">Itching: see thrush and BV advice</a>`);
+  out.push(`<p class="small muted">Until you've been tested, avoid sex without a condom, including oral sex. Your answers on this page are not saved.</p>
+    <p class="tiny muted">NHS · Sexually transmitted infections. Sexual health clinics are free and confidential.</p>
+    <button class="btn btn-ghost btn-block" data-act="stiReset">Start again</button>`);
+  return `<div class="stack-lg fade">${out.join('')}</div>`;
+}
+
+let logSafetyFirst=false;
+function viewUti(){
+  const opt=(act,href,icon,tone,t,s)=>`<${href?`a href="${href}"`:`button data-act="${act}"`} class="card" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center;width:100%;text-align:left;font:inherit;cursor:pointer">
+    ${artBubble(icon,tone).replace('width="120" height="104"','width="70" height="60"')}
+    <span style="flex:1;min-width:0"><b style="font:700 17px/1.25 var(--display)">${t}</b><span class="small muted" style="display:block">${s}</span></span>${ic('arrow',22)}</${href?'a':'button'}>`;
+  return `<div class="stack-lg fade">
+   <section class="hero peach">${blob(0,'var(--peach)','60%','-40px',1.2,.55)}${blob(1,'var(--accent)','-20%','62%',.8,.15)}
+     <div class="hero-art">${artBubble('drop','peach')}</div>
+     <span class="eyebrow">Urine symptoms</span><h1>Burning, or needing to wee often?</h1>
+     <p style="margin-top:8px">These are the classic signs of a urine infection. We'll check it's safe to manage, log it, and tell you if your infections now count as recurrent.</p></section>
+   <div class="stack">
+    ${opt('utiNow','','alert','rose','I have symptoms now','A quick safety check, then a few questions')}
+    ${opt('','#log','plus','peach','Log a past episode','Add infections you\'ve had before, from memory')}
+    ${opt('','#home','list','sage','See my UTI record','Your episodes, recurrence status and score')}
+   </div>
+   <p class="small muted">With symptoms now, a pharmacist can assess you under Pharmacy First. Ask them to send a urine sample to the lab if this keeps happening.</p></div>`;
+}
+
+function viewVaginal(){
+  const rows=[
+   ['flower','Itching with thick, white discharge','Often thrush. A pharmacist can recommend treatment without a prescription.','NICE CKS candida (vulvovaginal)'],
+   ['drop','Thin grey or white discharge with a fishy smell','Often bacterial vaginosis (BV). A pharmacist or GP can help.','NICE CKS bacterial vaginosis'],
+   ['flask','Not sure if it is BV or thrush?','You can buy a vaginal pH self-test from a pharmacy, such as Canestest. A pH above 4.5 points towards BV (or trichomonas, an STI). A normal pH with itching points towards thrush. After the menopause, a period or sex, pH can be raised anyway, so the result is less reliable then.','NICE CKS bacterial vaginosis · pH above 4.5'],
+   ['moon','Dryness, soreness or pain during sex','Common around and after the menopause, and can feel like a UTI.','NICE CKS menopause']];
+  return `<div class="stack-lg fade">
+   <section class="hero rose">${blob(0,'var(--rose)','60%','-40px',1.2,.2)}
+     <div class="hero-art">${artBubble('flower','rose')}</div><span class="eyebrow" style="color:var(--rose)">Vaginal symptoms</span>
+     <h1>Itching, discharge or a smell?</h1><p style="margin-top:8px">These are very common and often easy to treat. Here is what they are often linked to.</p></section>
+   <section class="card">${rows.map(([i,t,p,r],n)=>`<div class="ask"><span class="n">${ic(i,16,2)}</span><div><b>${t}</b><p class="small" style="margin-top:4px">${p}</p><span class="ref">${r}</span></div></div>`).join('')}</section>
+   <div class="banner"><span>${ic('alert',20)}</span><div><b>See your GP or a sexual health clinic rather than self-treating</b> if it's the first time, you're pregnant, under 16 or over 60, it keeps coming back (more than twice in 6 months), or you have a new partner.</div></div>
+   <a class="btn btn-primary btn-block" href="#sti">Could it be an STI? ${ic('arrow',20)}</a>
+   <a class="btn btn-soft btn-block" href="#home">I'm getting UTIs too</a></div>`;
+}
+function viewDryness(){
+  return `<div class="stack-lg fade">
+   <section class="hero amber">${blob(1,'var(--amber)','62%','-30px',1.1,.2)}
+     <div class="hero-art">${artBubble('moon','amber')}</div><span class="eyebrow" style="color:var(--amber)">Menopause and hormones</span>
+     <h1>Dryness, or pain during sex?</h1><p style="margin-top:8px">Around and after the menopause, lower oestrogen thins the tissue of the vagina and bladder opening. It is common, and treatable.</p></section>
+   <section class="card">
+    <div class="ask"><span class="n">1</span><div><b>Ask about vaginal oestrogen</b><p class="small" style="margin-top:4px">A local treatment, not HRT. It can also cut repeat UTIs by about half.</p><span class="ref">NICE CKS menopause · NG112</span></div><span class="grade A">A</span></div>
+    <div class="ask"><span class="n">2</span><div><b>50 or over, with no period for a year?</b><p class="small" style="margin-top:4px">It is sold over the counter as Gina. Ask the pharmacist, no prescription needed.</p><span class="ref">MHRA reclassification 2022</span></div></div>
+    <div class="ask"><span class="n">3</span><div><b>Vaginal moisturisers and lubricants</b><p class="small" style="margin-top:4px">Can ease dryness day to day and during sex. Available from pharmacies.</p><span class="ref">NICE CKS menopause</span></div></div>
+   </section>
+   <a class="btn btn-primary btn-block" href="#home">I'm getting UTIs too ${ic('arrow',20)}</a></div>`;
+}
+
+/* ---------------- shop (paid products, kept apart from the free NHS routes) ---------------- */
+ICON.bag='<path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>';
+const PRODUCTS=[
+ {id:'kit',name:'Second Episode kit',price:29,tone:'peach',item:'pot',desc:'Everything you need to walk into the pharmacy prepared, delivered in a box you can hold up at the counter.',
+  inc:['Printed episode card and your ask-list','Sterile sample pot, with how to get it cultured at the pharmacy or surgery','Four-pattern leaflet','Signpost card for over-the-counter vaginal oestrogen (50 and over)','The full plan included'],reg:'Contains no device we make'},
+ {id:'kitph',name:'Kit with vaginal pH strips',price:39,tone:'accent',item:'strip',desc:'The kit, plus pH strips to check at home. A pH above 4.5 can be a sign of low oestrogen or a change in vaginal bacteria.',
+  inc:['Everything in the kit','Vaginal pH strips, bought in from a UKCA-marked maker','Log the pH result in the app and it feeds the pattern check'],reg:"Strips keep their maker's UKCA marking"},
+ {id:'utiTest',grp:'test',name:'Home urine test',price:39,indic:true,tone:'peach',item:'pot',desc:'Is it really a UTI? A lab culture of your urine, with which antibiotics would work if it is.',
+  inc:['Your clinician requests the test, and the lab posts the kit straight to you','Urine pot, instructions and a return envelope','Culture plus antibiotic sensitivities from a UK clinical lab','Your clinician reviews the result before it is added to your record','We turn the result into your ask-list, so the next antibiotic is chosen from it'],reg:"The partner lab's test carries its own UKCA IVD marking"},
+ {id:'vagTest',grp:'test',name:'Vaginal health test',price:129,indic:true,tone:'rose',item:'swab',desc:'A simple home swab that shows the bacteria and yeast in your vagina. Useful when symptoms keep coming back but tests say there is no UTI.',
+  inc:['Swab and prepaid return envelope','BV-linked bacteria, thrush (Candida), protective Lactobacillus and pH','A clear chart of your result, in plain English','What women with your result are usually offered, with the guideline'],reg:"The partner lab's test carries its own UKCA IVD marking"},
+ {id:'vagSti',grp:'test',name:'Vaginal health + STI test',price:169,indic:true,tone:'sage',item:'swab',desc:'The vaginal health test from the same swab, plus a screen for common STIs.',
+  inc:['Everything in the vaginal health test','Chlamydia, gonorrhoea, trichomonas and Mycoplasma genitalium','Positive STI results come with a clinician call and treatment route','Remember: STI tests are free from NHS sexual health services'],reg:"The partner lab's test carries its own UKCA IVD marking"},
+ {id:'plan',name:'The plan',price:19,alt:'one-off, or £4.99 a month',tone:'amber',item:'phone',desc:'No box. The full digital plan on your phone.',
+  inc:['Full pattern check','Written ask-list with references','Test result translation','2-week, 6-week and 3-month check-ins'],reg:'Information and navigation'},
+ {id:'review',name:'Clinician review',price:95,priceTxt:'from £95',tone:'rose',item:'heart',desc:'A video review of recurrent UTIs with a GP who has your full record in front of them.',
+  inc:['Prescriptions where suitable, such as vaginal oestrogen under 50 or methenamine','A referral letter where needed','Provided by a CQC-registered partner'],reg:'A separate regulated service, not part of the app'}
+];
+const SHOP_LIST=()=>[...PRODUCTS.filter(p=>p.grp==='test'),...PRODUCTS.filter(p=>p.grp!=='test')];
+const money=n=>'£'+n.toFixed(2).replace('.00','');
+function productArt(p){
+  const c=`var(--${p.tone})`;
+  const items={
+   pot:`<rect x="104" y="40" width="26" height="40" rx="6" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><rect x="101" y="32" width="32" height="11" rx="4" fill="${c}" stroke="var(--ink)" stroke-width="2"/>`,
+   swab:`<rect x="104" y="26" width="22" height="58" rx="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><rect x="104" y="26" width="22" height="14" rx="7" fill="${c}" stroke="var(--ink)" stroke-width="2"/><line x1="134" y1="20" x2="122" y2="84" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/><ellipse cx="135" cy="18" rx="4" ry="7" fill="var(--peach)" stroke="var(--ink)" stroke-width="1.6" transform="rotate(10 135 18)"/>`,
+   strip:`<rect x="100" y="22" width="12" height="62" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><rect x="100" y="22" width="12" height="16" rx="4" fill="var(--peach)"/><rect x="118" y="30" width="12" height="54" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><rect x="118" y="30" width="12" height="14" rx="4" fill="var(--sage)"/>`,
+   flask:`<g transform="translate(98 30) scale(1.6)" stroke="var(--ink)" fill="none" stroke-width="1.5" stroke-linecap="round">${ICON.flask}</g>`,
+   phone:`<rect x="100" y="20" width="32" height="58" rx="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><rect x="106" y="32" width="20" height="4" rx="2" fill="${c}"/><rect x="106" y="40" width="14" height="4" rx="2" fill="var(--line)"/><circle cx="116" cy="60" r="7" fill="none" stroke="${c}" stroke-width="3"/>`,
+   heart:`<g transform="translate(96 30) scale(1.7)" stroke="var(--ink)" fill="${c}" fill-opacity=".35" stroke-width="1.4" stroke-linejoin="round">${ICON.heart}</g>`
+  };
+  const box=p.item==='phone'||p.item==='heart'?'':`<path d="M18 44 L60 30 L102 44 L60 58 Z" fill="${c}" opacity=".55"/><path d="M18 44 V84 L60 98 V58 Z" fill="${c}" opacity=".8"/><path d="M102 44 V84 L60 98 V58 Z" fill="${c}"/>
+    <circle cx="74" cy="72" r="6" fill="var(--peach)"/><circle cx="82" cy="72" r="6" fill="var(--surface)" opacity=".9"/>`;
+  return `<svg width="150" height="104" viewBox="0 0 150 104" aria-hidden="true"><ellipse cx="74" cy="96" rx="64" ry="6" fill="var(--ink)" opacity=".06"/>
+    ${box||`<circle cx="60" cy="56" r="40" fill="${c}" opacity=".25"/><circle cx="40" cy="30" r="8" fill="${c}" opacity=".5"/>`}${items[p.item]}</svg>`;
+}
+function recommendFor(){
+  const p=buildPlan(); if(!p) return null;
+  const a=state.assessment.answers;
+  if(p.primary==='OEST') return a.d2==='50'&&a.d1==='stopped'?'kitph':'review';
+  if(p.primary==='MIMIC') return 'vagTest';
+  if(p.primary==='EXPO') return 'review';
+  return 'kit';
+}
+let basket={}; let shopStep='list'; let lastOrder=null;
+function basketLines(){return Object.entries(basket).filter(([,q])=>q>0).map(([id,q])=>({p:PRODUCTS.find(x=>x.id===id),q}))}
+function basketTotal(){return basketLines().reduce((s,l)=>s+(l.p.price||0)*l.q,0)}
+function viewShop(){
+  const n=basketLines().reduce((s,l)=>s+l.q,0);
+  if(shopStep==='basket') return viewBasket();
+  if(shopStep==='done') return viewOrderDone();
+  const rec=recommendFor(), blocked=!!state.redFlag;
+  return `<div class="stack-lg fade">
+   <section class="hero peach">${blob(0,'var(--accent)','60%','-50px',1.2,.18)}${blob(1,'var(--peach)','-20%','58%',.9,.6)}
+    <div class="hero-art">${productArt(PRODUCTS[0])}</div>
+    <span class="eyebrow">Shop</span><h1>Home kits, delivered.</h1>
+    <p style="margin-top:8px">Paid kits and services, kept separate from the free NHS options in the app. Free tests stay free.</p></section>
+   ${blocked?`<div class="banner red"><span>${ic('alert',20)}</span><div><b>Please get seen first.</b> A red flag is open, so ordering is paused until a clinician has seen you. ${esc(state.redFlag.action)}</div></div>`:''}
+   ${n?`<button class="btn btn-primary btn-block" data-act="shopBasket">${ic('bag',20)} Basket · ${n} item${n===1?'':'s'} · ${money(basketTotal())}</button>`:''}
+   <section class="stack"><span class="eyebrow">Home tests</span><h2 style="font-size:22px">Test at home, read by a lab.</h2>
+     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center">
+      ${[['bag','Order'],['drop','Take the sample'],['flask','Lab tests it'],['list','Result becomes your ask-list']].map(([i,t],n)=>`<div class="stack" style="gap:6px;align-items:center"><span style="width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)">${ic(i,22)}</span><span class="tiny" style="font-weight:700">${n+1}. ${t}</span></div>`).join('')}
+     </div>
+     <a class="btn btn-soft btn-block" href="#result">${ic('lens',20)} See an example result</a></section>
+   ${SHOP_LIST().map((p,i,A)=>`${i>0&&A[i-1].grp==='test'&&p.grp!=='test'?'<section class="stack" style="margin-top:6px"><span class="eyebrow">Kits, plan and care</span></section>':''}<section class="card stack" id="p-${p.id}" ${rec===p.id?'style="border-color:var(--accent);border-width:1.5px"':''}>
+     <div class="row" style="flex-wrap:nowrap;gap:12px;align-items:center">
+       <div style="flex:none;background:var(--${p.tone==='accent'?'accent':p.tone}-soft);border-radius:18px;padding:4px">${productArt(p).replace('width="150" height="104"','width="112" height="78"')}</div>
+       <div style="flex:1;min-width:0">${rec===p.id?'<span class="tag rec" style="margin-bottom:6px">Suggested for your pattern</span>':''}
+         <h3>${p.name}</h3><p style="font:800 22px/1.2 var(--display);margin-top:4px">${p.priceTxt||money(p.price)}</p>${p.alt?`<p class="tiny muted">${p.alt}</p>`:''}${p.indic?'<p class="tiny muted">Indicative price, to be set with the lab partner</p>':''}</div></div>
+     <p class="small">${p.desc}</p>
+     <div class="stack" style="gap:6px">${p.inc.map(i=>`<div class="row small" style="flex-wrap:nowrap;align-items:flex-start;gap:8px"><span style="color:var(--sage);flex:none;margin-top:1px">${ic('check',18,2).replace(ICON.check,'<path d="m5 12.5 4.5 4.5L19 7.5"/>')}</span><span>${i}</span></div>`).join('')}</div>
+     <div class="row" style="justify-content:space-between"><span class="ref">${p.reg}</span>
+       ${p.id==='review'?`<a class="btn btn-primary" href="#gp">Book a time</a>`:p.price===null
+         ?`<button class="btn btn-soft" data-act="shopInterest" data-id="${p.id}" ${blocked?'disabled style="opacity:.5"':''}>Register interest</button>`
+         :`<button class="btn ${basket[p.id]?'btn-soft':'btn-primary'}" data-act="shopAdd" data-id="${p.id}" ${blocked?'disabled style="opacity:.5"':''}>${basket[p.id]?'Added ✓':'Add to basket'}</button>`}</div>
+   </section>`).join('')}
+   <section class="card stack" style="background:var(--sage-soft);border-color:transparent">
+     <h3>Looking for a free test?</h3>
+     <p class="small">A urine culture is free through your pharmacy or GP. STI tests are free from NHS sexual health services.</p>
+     <div class="row"><a class="btn btn-soft" href="#sti">Free STI tests</a><a class="btn btn-ghost" href="#uti">UTI options</a></div></section>
+   ${(state.orders||[]).length?`<section class="stack"><h3>Your orders</h3>${state.orders.slice().reverse().map(o=>`<div class="card row" style="justify-content:space-between"><span><b class="num">#${o.no}</b> · ${fmt(o.date)}<br><span class="small muted">${o.lines.map(l=>l.name+(l.q>1?' ×'+l.q:'')).join(', ')}</span></span><span class="tag warn">Demo</span></div>`).join('')}</section>`:''}
+   <p class="tiny muted" style="text-align:center">Prototype shop. No payment is taken and nothing is posted. Prescription items are only ever supplied through a clinician.</p>
+  </div>`;
+}
+function viewBasket(){
+  const lines=basketLines();
+  return `<div class="stack-lg fade">
+   <div class="row"><button class="chip-btn" data-act="shopBack">${ic('back',16)} Shop</button></div>
+   <h1>Your basket</h1>
+   ${lines.length?`<section class="card">${lines.map(l=>`<div class="row" style="flex-wrap:nowrap;gap:12px;padding:10px 0;border-top:1px solid var(--line)">
+      <div style="flex:none">${productArt(l.p).replace('width="150" height="104"','width="72" height="50"')}</div>
+      <div style="flex:1;min-width:0"><b>${l.p.name}</b><div class="small muted">${money(l.p.price)}</div></div>
+      <div class="row" style="gap:6px;flex-wrap:nowrap"><button class="chip-btn" data-act="shopQty" data-id="${l.p.id}" data-d="-1" aria-label="One fewer">−</button><span class="num" style="min-width:18px;text-align:center">${l.q}</span><button class="chip-btn" data-act="shopQty" data-id="${l.p.id}" data-d="1" aria-label="One more">+</button></div></div>`).join('')}
+     <div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:12px"><span>Delivery</span><span class="num">Free</span></div>
+     <div class="row" style="justify-content:space-between;padding-top:8px"><b style="font:800 20px var(--display)">Total</b><b class="num" style="font:800 20px var(--display)">${money(basketTotal())}</b></div></section>
+    ${basket.kit||basket.kitph?`<div class="banner" style="background:var(--sage-soft)"><span>${ic('check',20)}</span><div>Your kit includes the plan, so you don't need to buy it separately.</div></div>`:''}
+    <div class="banner"><span>${ic('lock',20)}</span><div><b>Demo checkout.</b> At launch, payment and delivery details will be handled by a secure payment provider. No details are asked for here.</div></div>
+    <button class="btn btn-primary btn-block" data-act="shopOrder">Place demo order · ${money(basketTotal())}</button>`
+   :`<p class="muted">Your basket is empty.</p><button class="btn btn-soft" data-act="shopBack">Back to the shop</button>`}
+  </div>`;
+}
+function viewOrderDone(){
+  const o=lastOrder;
+  const hasTest=o.lines.some(l=>['utiTest','vagTest','vagSti'].includes(l.id));
+  const hasKit=o.lines.some(l=>['kit','kitph','plan'].includes(l.id));
+  const steps=(list)=>list.map(([i,t,s],n)=>`<div class="ask"><span class="n">${n+1}</span><div style="flex:1;min-width:0"><b>${t}</b><p class="small muted">${s}</p></div><span style="color:var(--accent);flex:none">${ic(i,22)}</span></div>`).join('');
+  return `<div class="stack-lg fade">
+   <section class="hero sage">${blob(0,'var(--sage)','58%','-40px',1.2,.3)}
+     <div class="hero-art">${productArt(hasTest?PRODUCTS.find(p=>p.id==='utiTest'):PRODUCTS[0])}</div>
+     <span class="eyebrow" style="color:var(--sage)">Demo order placed</span><h1>Thank you. Order #${o.no}</h1>
+     <p style="margin-top:8px">${hasTest?'Here is what happens next with your home test.':'In the live service, your kit is posted in a plain box and the plan unlocks straight away.'}</p></section>
+   ${hasTest?`<section class="card"><div class="card-head"><h3>Your home test, step by step</h3><span class="tag ok">Real pilot route</span></div>
+     ${steps([
+       ['heart','A clinician requests your test','A Second Episode clinician sends the request to our lab partner.'],
+       ['bag','The lab posts your kit to you','Straight to your door, in plain packaging, with clear instructions.'],
+       ['drop','Take your sample and post it back','Use the return envelope, and post it the same day you take it.'],
+       ['flask','Your clinician reviews the result','If anything needs action soon, they contact you directly.'],
+       ['list','Your record and ask-list update','The result appears here, with what to ask for next.']])}
+     <p class="tiny muted" style="margin-top:10px">This uses our lab partner's existing self-collection kit service. The urine test is ready for the pilot. The vaginal swab tests are being confirmed with the lab.</p></section>`:''}
+   ${hasKit?`<section class="card"><div class="card-head"><h3>${hasTest?'Your kit':'What happens next'}</h3></div>
+     ${steps([['bag','Packed and posted','In plain packaging'],['drop','Use the sample pot','Take it to the pharmacy or surgery with your ask-list'],['list','Log it here','Add your result, and we update your ask-list']])}
+   </section>`:''}
+   <a class="btn btn-primary btn-block" href="#plan">Go to my plan</a>
+   <button class="btn btn-ghost btn-block" data-act="shopBack">Back to the shop</button></div>`;
+}
+
+/* ---------------- example home test result (Plus only) ---------------- */
+const EX_RESULT={
+ taxa:[['Lactobacillus crispatus','protective',8,'var(--sage)'],['Lactobacillus iners','mixed',34,'var(--amber)'],['Gardnerella vaginalis','BV-linked',41,'var(--rose)'],['Fannyhessea vaginae','BV-linked',9,'color-mix(in srgb, var(--rose) 60%, var(--surface))'],['Other','',8,'var(--line)']],
+ ph:5.0,
+ flags:[['BV-linked bacteria','High','bad'],['Thrush (Candida)','Not found','ok'],['Protective Lactobacillus','Low','warn']]
+};
+function viewResult(){
+  const r=EX_RESULT, x=v=>((v-3.5)/(7-3.5))*100;
+  return `<div class="stack-lg fade">
+   <div class="banner"><span>${ic('flower',20)}</span><div><b>Example result.</b> This shows what a woman would see after her vaginal health test comes back. It is not your result.</div></div>
+   <section class="hero rose">${blob(0,'var(--rose)','60%','-40px',1.2,.2)}
+     <span class="eyebrow" style="color:var(--rose)">Vaginal health test · example</span>
+     <h1>Your result is often linked to BV.</h1>
+     <p style="margin-top:8px">Your sample showed low protective bacteria and high levels of bacteria often found in bacterial vaginosis (BV). This can feel like a UTI, and antibiotics for a UTI will not treat it.</p></section>
+
+   <section class="card stack"><div class="card-head" style="margin:0"><h3>What was found</h3><span class="tiny muted">share of bacteria</span></div>
+     <div style="display:flex;height:26px;border-radius:99px;overflow:hidden;gap:2px" role="img" aria-label="Bacteria mix">${r.taxa.map(t=>`<span style="width:${t[2]}%;background:${t[3]}"></span>`).join('')}</div>
+     <div class="stack" style="gap:8px">${r.taxa.map(t=>`<div class="row" style="flex-wrap:nowrap;gap:10px"><span style="width:12px;height:12px;border-radius:4px;background:${t[3]};flex:none"></span><span class="small" style="flex:1;min-width:0"><i>${t[0]}</i>${t[1]?` <span class="muted">· ${t[1]}</span>`:''}</span><b class="small num">${t[2]}%</b></div>`).join('')}</div></section>
+
+   <section class="card stack"><div class="card-head" style="margin:0"><h3>Vaginal pH</h3><b class="num" style="font:800 22px var(--display)">${r.ph.toFixed(1)}</b></div>
+     <div style="position:relative;height:14px;border-radius:99px;background:linear-gradient(90deg,var(--sage) 0%,var(--sage) ${x(4.5)}%,var(--amber) ${x(4.5)}%,var(--rose) 100%)">
+       <span style="position:absolute;left:calc(${x(r.ph)}% - 9px);top:-5px;width:18px;height:24px;border-radius:7px;background:var(--surface);border:3px solid var(--ink)"></span></div>
+     <div class="row tiny muted" style="justify-content:space-between"><span>3.5</span><span>4.5 usual upper limit</span><span>7.0</span></div>
+     <p class="small">A pH above 4.5 is one of the signs clinicians use for BV. After the menopause, pH is often higher anyway.</p></section>
+
+   <section class="card"><div class="card-head"><h3>At a glance</h3></div>
+     ${r.flags.map(f=>`<div class="row" style="justify-content:space-between;padding:8px 0;border-top:1px solid var(--line)"><span>${f[0]}</span><span class="tag ${f[2]}">${f[1]}</span></div>`).join('')}</section>
+
+   <section class="card"><div class="card-head"><h3>What to ask for</h3></div>
+     ${askList([
+       {t:'Ask whether treatment for BV is suitable for you, such as metronidazole or clindamycin.',ref:'NICE CKS bacterial vaginosis'},
+       {t:'If BV keeps coming back, ask about a longer preventive course.',ref:'BASHH bacterial vaginosis guideline'},
+       {t:'Mention your UTI record too, so repeat "UTIs" with no infection found can be looked at together.',ref:'NICE NG112 1.1.5'},
+       {t:'Over 45 with dryness? Ask about vaginal oestrogen, which can help restore protective bacteria.',ref:'NICE CKS menopause',g:'A'}])}
+   </section>
+   <p class="small muted">Microbiome tests describe what is there well, but the meaning of many findings is still being studied. That is why we only suggest what a guideline supports.</p>
+   <div class="grid2"><a class="btn btn-primary" href="#gp">Discuss with a GP</a><button class="btn btn-soft" data-act="addExample">Add to example record</button></div>
+   <a class="btn btn-ghost btn-block" href="#shop">Back to the shop</a></div>`;
+}
+
+/* ---------------- GP appointments (Plus only) ---------------- */
+const GP_REASONS=[['uti','Recurrent UTI review'],['oest','Vaginal oestrogen or menopause symptoms'],['vag','Itching, discharge or a smell'],['other','Something else']];
+const GP_TIMES=['09:00','11:30','14:00','17:30','19:30'];
+let gp={reason:'',mode:'video',day:'',time:'',share:true}; let gpDone=null;
+function gpDays(){const out=[];let d=today();while(out.length<6){d=new Date(d.getTime()+DAY);if(d.getDay()!==0)out.push(iso(d))}return out}
+const slotTaken=(d,t)=>(Number(d.slice(-2))+GP_TIMES.indexOf(t))%3===0;
+function upcomingAppt(){return (state.appointments||[]).filter(a=>a.day>=iso(today())).sort((a,b)=>a.day<b.day?-1:1)[0]}
+function apptCard(a){
+  return `<section class="card" style="display:flex;gap:14px;align-items:center;border-color:var(--sage);border-width:1.5px">
+   <div style="text-align:center;min-width:52px;background:var(--sage-soft);border-radius:14px;padding:8px 6px"><b style="font:800 22px/1 var(--display)" class="num">${new Date(a.day+'T12:00:00').getDate()}</b><div class="tiny">${new Date(a.day+'T12:00:00').toLocaleDateString('en-GB',{month:'short'})}</div></div>
+   <div style="flex:1;min-width:0"><span class="eyebrow" style="color:var(--sage)">GP appointment</span><h3>${a.time} · ${a.mode==='video'?'Video call':'Phone call'}</h3><p class="small muted">${esc(GP_REASONS.find(r=>r[0]===a.reason)[1])}</p></div></section>`;
+}
+function viewGp(){
+  if(gpDone) return `<div class="stack-lg fade">
+   <section class="hero sage">${blob(0,'var(--sage)','58%','-40px',1.2,.3)}<div class="hero-art">${artBubble('heart','sage')}</div>
+    <span class="eyebrow" style="color:var(--sage)">Demo booking confirmed</span><h1>You're booked in.</h1>
+    <p style="margin-top:8px">${gpDone.share?'Your GP will see your episode timeline, pattern and ask-list before the call.':'Your record was not shared. You can tell the GP about it on the call.'}</p></section>
+   ${apptCard(gpDone)}
+   <section class="card">${[['bell','A reminder the day before','By text, in the live service'],['list','Have your ask-list ready','It opens in the app during the call'],['pill','Prescriptions and letters','Sent to the pharmacy you choose, if the GP prescribes']].map(([i,t,s],n)=>`<div class="ask"><span class="n">${n+1}</span><div><b>${t}</b><p class="small muted">${s}</p></div></div>`).join('')}</section>
+   <a class="btn btn-ghost btn-block" href="#start">Done</a></div>`;
+  const days=gpDays(), ready=gp.reason&&gp.day&&gp.time;
+  return `<div class="stack-lg fade">
+   <section class="hero sage">${blob(1,'var(--sage)','64%','-30px',1.1,.3)}${blob(0,'var(--peach)','-24%','60%',.8,.45)}
+    <div class="hero-art">${artBubble('heart','sage')}</div>
+    <span class="eyebrow" style="color:var(--sage)">See a GP</span><h1>Book a GP appointment.</h1>
+    <p style="margin-top:8px">A 20-minute video or phone call with a GP who has your full record in front of them. ${money(95)}.</p></section>
+   ${state.redFlag?`<div class="banner red"><span>${ic('alert',20)}</span><div><b>This is not for urgent care.</b> A red flag is open. ${esc(state.redFlag.action)}</div></div>`:''}
+   <div class="card stack-lg">
+    <div class="field"><span class="lbl">What is it about?</span><div class="pills">${GP_REASONS.map(([k,l])=>`<button class="pill ${gp.reason===k?'on':''}" data-act="gpSet" data-f="reason" data-v="${k}">${l}</button>`).join('')}</div></div>
+    <div class="field"><span class="lbl">How would you like to talk?</span><div class="pills">${[['video','Video call'],['phone','Phone call']].map(([k,l])=>`<button class="pill ${gp.mode===k?'on':''}" data-act="gpSet" data-f="mode" data-v="${k}">${l}</button>`).join('')}</div></div>
+    <div class="field"><span class="lbl">Choose a day</span>
+     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px">${days.map(d=>{const x=new Date(d+'T12:00:00');return `<button class="pill ${gp.day===d?'on':''}" data-act="gpSet" data-f="day" data-v="${d}" style="padding:8px 2px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:2px"><span class="tiny" style="font-weight:700">${x.toLocaleDateString('en-GB',{weekday:'short'})}</span><b class="num" style="font:800 18px/1 var(--display)">${x.getDate()}</b></button>`}).join('')}</div></div>
+    ${gp.day?`<div class="field"><span class="lbl">Choose a time</span><div class="pills">${GP_TIMES.map(t=>slotTaken(gp.day,t)
+      ?`<span class="pill" style="opacity:.4;text-decoration:line-through;cursor:default">${t}</span>`
+      :`<button class="pill ${gp.time===t?'on':''}" data-act="gpSet" data-f="time" data-v="${t}">${t}</button>`).join('')}</div></div>`:''}
+    <button class="flag soft ${gp.share?'on':''}" data-act="gpShare" aria-pressed="${gp.share}"><span class="box"></span><span>Share my Second Episode summary with the GP before the call</span></button>
+   </div>
+   <button class="btn btn-primary btn-block" data-act="gpBook" ${ready?'':'disabled style="opacity:.5"'}>${ready?`Book ${fmtShort(gp.day)}, ${gp.time} · ${money(95)}`:'Choose a reason, day and time'}</button>
+   <p class="tiny muted">Demo booking. No payment is taken. In the live service, appointments are with GPs from a CQC-registered partner, separate from the app. Not for emergencies: for urgent symptoms use your own GP, 111 or Pharmacy First.</p>
+  </div>`;
+}
+
+/* ---------------- prevention (both editions) ---------------- */
+const PREVENT=[
+ {grp:'Bladder',tone:'peach',items:[
+  ['drop','Drink enough','If you drink little, an extra 1.5 litres of water a day roughly halved repeat UTIs in a trial.','A','Hooton et al., JAMA Intern Med 2018'],
+  ['heart','Wee after sex','Passing urine soon after sex helps flush bacteria away from the bladder opening.','','NICE CKS self-care'],
+  ['cycle',"Don't hold on",'Go when you need to and take time to empty your bladder fully.','','NHS · UTIs'],
+  ['shield','Rethink spermicide','Diaphragms and spermicide are linked to more UTIs. Ask about other contraception.','','NICE CKS recurrent UTI']]},
+ {grp:'Vaginal health',tone:'rose',items:[
+  ['flower','Water is enough','Wash the outside (vulva) with water or a plain emollient. Skip douches, perfumed washes and wipes, which upset the natural balance.','','NHS · keeping your vagina clean'],
+  ['moon','Treat dryness','After the menopause, vaginal oestrogen roughly halves repeat UTIs and eases dryness. Moisturisers and lubricants help day to day.','A','NICE NG112 · CKS menopause'],
+  ['sprout','Let it breathe','Cotton underwear and looser clothes can help prevent thrush.','','NHS · thrush']]},
+ {grp:'Pelvic floor',tone:'sage',items:[
+  ['cycle','Daily squeezes','Pelvic floor exercises, done regularly for at least 3 months, help with leaks and bladder control.','A','NICE NG123'],
+  ['pill','Keep things moving','Avoid constipation with fibre and fluids. Straining puts pressure on the bladder and pelvic floor.','','NHS · constipation']]},
+ {grp:'Checks to keep up',tone:'amber',items:[
+  ['shield','Condoms with new partners','And a free STI test when you change partner.','','NHS · sexual health'],
+  ['lens','Cervical screening','Invited every 3 to 5 years from 25 to 64. Book when your letter comes.','','NHS cervical screening'],
+  ['flask','Get a sample tested','With every UTI, ask for a urine sample to go to the lab before antibiotics.','','NICE NG112 1.1.5']]}
+];
+function viewPrevent(){
+  return `<div class="stack-lg fade">
+   <section class="hero sage">${blob(0,'var(--sage)','58%','-50px',1.3,.3)}${blob(1,'var(--peach)','-22%','60%',.9,.5)}
+    <div class="hero-art">${artBubble('sprout','sage')}</div>
+    <span class="eyebrow" style="color:var(--sage)">Prevention</span><h1>Small habits, fewer infections.</h1>
+    <p style="margin-top:8px">What women can do every day for bladder, vaginal and pelvic floor health. Each one names its source.</p></section>
+   ${PREVENT.map(g=>`<section class="stack"><h2 style="font-size:21px">${g.grp}</h2>
+     <div class="grid2">${g.items.map(([i,t,w,gr,r])=>`<div class="card stack" style="gap:8px;padding:14px;background:var(--${g.tone}-soft);border-color:transparent">
+       <div class="row" style="justify-content:space-between;flex-wrap:nowrap"><span style="color:var(--ink)">${ic(i,28)}</span>${gr?`<span class="grade ${gr}" style="width:28px;height:28px;font-size:13px;border-radius:9px" title="Evidence grade ${gr}">${gr}</span>`:''}</div>
+       <b style="font:700 16px/1.25 var(--display)">${t}</b><p class="small">${w}</p><span class="tiny muted">${r}</span></div>`).join('')}</div></section>`).join('')}
+   ${evidenceCard()}
+   <a class="btn btn-primary btn-block" href="#start">Back to start</a></div>`;
+}
+
+/* ---------------- router & events ---------------- */
+const ROUTES={result:viewResult,gp:viewGp,prevent:viewPrevent,shop:viewShop,start:viewStart,uti:viewUti,home:viewHome,log:viewLog,check:viewCheck,plan:viewPlan,card:viewCard,follow:viewFollow,sti:viewSti,vaginal:viewVaginal,dryness:viewDryness};
+if(!PAID){delete ROUTES.shop;delete ROUTES.gp;delete ROUTES.result}
+const NAV=[['start','home','Start'],['home','drop','UTIs'],['check','check','Check'],['plan','list','Plan'],PAID?['shop','bag','Shop']:['prevent','sprout','Prevent']];
+const NAV_PARENT={result:'shop',gp:'shop',prevent:'start',log:'home',uti:'start',card:'plan',follow:'home',sti:'start',vaginal:'start',dryness:'start'};
+function route(){const h=location.hash.slice(1);return ROUTES[h]?h:'start'}
+function render(scrollTop){
+  const r=route();
+  document.getElementById('view').innerHTML=ROUTES[r]();
+  document.getElementById('nav').innerHTML=NAV.map(([k,i,l])=>`<a href="#${k}" class="${(r===k||NAV_PARENT[r]===k)?'on':''}" ${r===k?'aria-current="page"':''}>${ic(i,24)}<span>${l}</span></a>`).join('');
+  if(scrollTop) window.scrollTo({top:0});
+}
+function go(h){if(location.hash==='#'+h) render(true); else location.hash=h}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2000)}
+if(PAID){const b=document.getElementById('brandName');b.innerHTML='Second Episode <span class="tag rec" style="padding:2px 8px;font-size:11px;vertical-align:3px">Plus</span>'}
+window.addEventListener('hashchange',()=>{if(route()!=='gp')gpDone=null;if(route()!=='log'){logStep='form';logSafetyFirst=false} if(route()!=='shop'&&shopStep==='done'){shopStep='list'} render(true)});
+
+document.addEventListener('input',e=>{
+  const a=e.target.dataset.act;
+  if(a==='dateDraft'){logDraft.date=e.target.value}
+  if(a==='abxName'){logDraft.abxName=e.target.value}
+});
+document.addEventListener('change',e=>{if(e.target.dataset.act==='dateDraft') render()});
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]'); if(!el||el.tagName==='INPUT') return;
+  const a=el.dataset.act;
+  switch(a){
+   case 'menu': {const m=document.getElementById('menu');m.hidden=!m.hidden;break}
+   case 'seed': state=seedState();save();document.getElementById('menu').hidden=true;flow=null;go('home');toast('Example loaded');break;
+   case 'wipe': state=emptyState();save();document.getElementById('menu').hidden=true;flow=null;logDraft=null;go('home');toast('Started a fresh record');break;
+   case 'setDraft': logDraft[el.dataset.f]=el.dataset.v; if(el.dataset.f==='sample'&&el.dataset.v!=='yes') logDraft.result=el.dataset.v==='no'?'notsent':''; render(); break;
+   case 'utiNow': logDraft=newDraft(); safetySel=new Set(); logStep='safety'; logSafetyFirst=true; if(route()==='log') render(true); else location.hash='log'; break;
+   case 'logNext':
+     if(!(logDraft.date&&logDraft.where&&logDraft.abx)) return;
+     if(logSafetyFirst){state.episodes.push({...logDraft});state.example=false;logDraft=null;logSafetyFirst=false;save();logStep='done';render(true);break}
+     safetySel=new Set(); logStep='safety'; render(true); break;
+   case 'toggleFlag': safetySel.has(el.dataset.id)?safetySel.delete(el.dataset.id):safetySel.add(el.dataset.id); render(); break;
+   case 'worried': safetySel.add('worried'); /* fall through */
+   case 'safetyDone': {
+     const ctx=el.dataset.ctx;
+     if(ctx==='log'&&logSafetyFirst&&!safetySel.size){logStep='form';render(true);break}
+     if(ctx==='log'&&logSafetyFirst){logSafetyFirst=false;logDraft=null}
+     else if(ctx==='log'){state.episodes.push({...logDraft});state.example=false;logDraft=null}
+     if(safetySel.size){
+       const ids=[...safetySel], lv=Math.max(...ids.map(id=>id==='worried'?3:SAFETY.find(s=>s.id===id).level));
+       state.redFlag={ids,date:iso(today()),action:lv>=3?'Contact your GP today, or 111.':lv>=2?'Book a GP review within a week.':lv>=1?'Book a routine GP review.':'Your GP should lead your care.'};
+       save(); flow=null; logStep='form'; go('check'); return;
+     }
+     save();
+     if(ctx==='log'){logStep='done';render(true)}
+     else {flow.step='q';flow.i=0;render(true)}
+     break;}
+   case 'clearFlag': state.redFlag=null; save(); toast('Red flag closed'); go('home'); break;
+   case 'startCheck': {
+     const ans={};
+     const n=abxCount12(iso(today())); ans.d7=n>=6?'6+':n>=3?'3-5':'0-2';
+     if(state.tests.some(t=>t.finding==='none')) ans.d8='yes';
+     if(state.tests.some(t=>t.finding==='resistant')) ans.d10='yes';
+     flow={step:'safety',i:0,answers:ans}; safetySel=new Set(); render(true); break;}
+   case 'answer': {
+     flow.answers[el.dataset.q]=el.dataset.v;
+     el.closest('.opts').querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o===el));
+     setTimeout(()=>{
+       const qs=visibleQs(flow.answers);
+       if(flow.i<qs.length-1){flow.i++;render(true)}
+       else{
+         if(flow.answers.d5===undefined) flow.answers.d5='noperiods';
+         state.assessment={date:iso(today()),answers:{...flow.answers}};
+         state.followups={}; state.extraAsks=[]; state.example=false; flow=null; save(); go('plan'); toast('Your ask-list is ready');
+       }},260);
+     break;}
+   case 'qBack': if(flow.i>0){flow.i--;render(true)}else{flow.step='safety';render(true)} break;
+   case 'copy': {
+     const txt=summaryText();
+     const fb=()=>{const ta=document.getElementById('copyArea');ta.hidden=false;ta.select();toast('Select all and copy')};
+     try{navigator.clipboard.writeText(txt).then(()=>toast('Copied'),fb)}catch(err){fb()}
+     break;}
+   case 'fuSet': fuDraft[el.dataset.id]=el.dataset.v; render(); break;
+   case 'fuSave': {
+     const k=el.dataset.k, t=iso(today());
+     if(k==='2w'){const p=buildPlan();const asks={};[...p.main,...p.extra].forEach(x=>asks[x.id]=fuDraft[x.id]||'notdiscussed');
+       state.followups['2w']={date:t,asks,note:(document.getElementById('fuNote')||{}).value||''}}
+     if(k==='6w'){state.followups['6w']={date:t,newEp:fuDraft.newEp==='yes',side:fuDraft.side==='yes'}; if(fuDraft.newEp==='yes'){fuDraft={};save();toast('Saved. Log the new episode');go('log');return}}
+     if(k==='3m'){const rec=isRecurrentAt(t);const prev=state.followups['2w']&&Object.values(state.followups['2w'].asks).includes('started');
+       if(rec&&prev&&!state.extraAsks.includes('referral')) state.extraAsks.push('referral');
+       state.followups['3m']={date:t,msg:rec?(prev?'Still recurrent on prevention: referral ask added to your list.':'Still recurrent. Nothing has been started yet, so the first asks still apply.'):'No longer meets the recurrent definition.'}}
+     fuDraft={}; save(); toast('Check-in saved'); render(true); break;}
+   case 'delEp': state.episodes=state.episodes.filter(x=>x.id!==el.dataset.id); save(); render(); toast('Episode removed'); break;
+   case 'testSrc': testDraft.source=el.dataset.v; render(); break;
+   case 'testFind': testDraft.finding=el.dataset.v; render(); break;
+   case 'addTest': if(!testDraft.source||!testDraft.finding) return; state.tests.push({id:uid(),date:iso(today()),...testDraft}); testDraft={source:'',finding:''}; save(); render(); toast('Result added'); break;
+   case 'delTest': state.tests=state.tests.filter(x=>x.id!==el.dataset.id); save(); render(); break;
+   case 'gpSet': gp[el.dataset.f]=el.dataset.v; if(el.dataset.f==='day') gp.time=''; render(); break;
+   case 'gpShare': gp.share=!gp.share; render(); break;
+   case 'gpBook': if(!(gp.reason&&gp.day&&gp.time)) return;
+     gpDone={...gp,id:uid()}; state.appointments=[...(state.appointments||[]),gpDone]; save();
+     gp={reason:'',mode:'video',day:'',time:'',share:true}; render(true); break;
+   case 'shopAdd': basket[el.dataset.id]=(basket[el.dataset.id]||0)+(basket[el.dataset.id]?0:1); render(); toast('Added to basket'); break;
+   case 'addExample': state.tests.push({id:uid(),date:iso(today()),source:'Vaginal health test (example)',finding:'vaginal'},{id:uid(),date:iso(today()),source:'Vaginal health test (example)',finding:'ph'}); save(); toast('Added. Re-run the check to see it'); break;
+   case 'shopBasket': shopStep='basket'; render(true); break;
+   case 'shopBack': shopStep='list'; render(true); break;
+   case 'shopQty': {const id=el.dataset.id;basket[id]=Math.max(0,(basket[id]||0)+Number(el.dataset.d));if(!basket[id])delete basket[id];render();break}
+   case 'shopOrder': {
+     const lines=basketLines(); if(!lines.length) return;
+     lastOrder={no:String(Date.now()).slice(-6),date:iso(today()),total:basketTotal(),lines:lines.map(l=>({id:l.p.id,name:l.p.name,q:l.q}))};
+     state.orders=[...(state.orders||[]),lastOrder]; save(); basket={}; shopStep='done'; render(true); break;}
+   case 'stiStart': sti={step:'safety',i:0,a:{},flags:new Set()}; render(true); break;
+   case 'stiFlag': sti.flags.has(el.dataset.id)?sti.flags.delete(el.dataset.id):sti.flags.add(el.dataset.id); render(); break;
+   case 'stiSafetyDone': sti.step='q'; sti.i=0; render(true); break;
+   case 'stiMulti': {const s=sti.a.sym||(sti.a.sym=[]);const v=el.dataset.v;const k=s.indexOf(v);k>=0?s.splice(k,1):s.push(v);render();break}
+   case 'stiAnswer':
+     sti.a[el.dataset.q]=el.dataset.v;
+     el.closest('.opts').querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o===el));
+     setTimeout(stiAdvance,260); break;
+   case 'stiNext': if(!sti.a.sym) sti.a.sym=[]; stiAdvance(); break;
+   case 'stiBack': if(sti.i>0){sti.i--}else{sti.step='safety'} render(true); break;
+   case 'stiReset': sti=null; render(true); break;
+  }
+});
+function stiAdvance(){
+  const qs=stiVisible();
+  if(sti.i<qs.length-1){sti.i++}else{sti.step='result'}
+  render(true);
+}
+render();
+</script>

@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Second Episode Console</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: staff console. Sidebar of six workspaces on wide screens (top tab strip on phones), summary first, queues and tables below. */
+:root{
+  --bg:#F7F3F5; --surface:#FFFFFF; --ink:#26182A; --muted:#6C5C6D; --line:#E8DCE2;
+  --plum:#8E3B68; --plum-ink:#FFFFFF; --plum-soft:#F3DDE8;
+  --peach:#E79B7A; --peach-soft:#FBE8DD;
+  --sage:#4F7F68; --sage-soft:#DCEBE2;
+  --amber:#9A6508; --amber-soft:#F8E8C6;
+  --rose:#B2304A; --rose-soft:#F8DADF;
+  --side:#2B1A2D; --side-ink:#F3E6EE; --side-muted:#BFA8B9;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151014; --surface:#211820; --ink:#F5EBF1; --muted:#B9A6B4; --line:#382A35;
+  --plum:#E39BC0; --plum-ink:#2A1222; --plum-soft:#43253A; --peach:#E9A585; --peach-soft:#3C2820;
+  --sage:#8DC2A8; --sage-soft:#1F342A; --amber:#E7B65C; --amber-soft:#3A2E1C; --rose:#F08A9D; --rose-soft:#44202A;
+  --side:#0F0B0F; --side-ink:#F3E6EE; --side-muted:#A893A3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151014; --surface:#211820; --ink:#F5EBF1; --muted:#B9A6B4; --line:#382A35;
+  --plum:#E39BC0; --plum-ink:#2A1222; --plum-soft:#43253A; --peach:#E9A585; --peach-soft:#3C2820;
+  --sage:#8DC2A8; --sage-soft:#1F342A; --amber:#E7B65C; --amber-soft:#3A2E1C; --rose:#F08A9D; --rose-soft:#44202A;
+  --side:#0F0B0F; --side-ink:#F3E6EE; --side-muted:#A893A3; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1{font-size:28px;font-weight:800;line-height:1.1}
+h2{font-size:18px;font-weight:800}
+h3{font-size:15px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:13.5px} .tiny{font-size:12px}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);font-size:12.5px}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100%}
+.side{background:var(--side);color:var(--side-ink);padding:22px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;padding-left:max(14px,env(safe-area-inset-left,0px))}
+.brand{display:flex;gap:9px;align-items:center;font:800 17px var(--display);padding:0 8px}
+.brand small{display:block;font:600 11px var(--body);color:var(--side-muted);letter-spacing:.06em;text-transform:uppercase}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:var(--side-muted);text-decoration:none;font-weight:600;font-size:14px}
+.nav a:hover{color:var(--side-ink);background:color-mix(in srgb,var(--side-ink) 8%,transparent)}
+.nav a.on{color:var(--side-ink);background:color-mix(in srgb,var(--side-ink) 14%,transparent)}
+.nav .count{margin-left:auto;background:var(--rose);color:#fff;border-radius:99px;font-size:11.5px;padding:1px 7px;font-weight:700}
+.side .foot{margin-top:auto;font-size:12px;color:var(--side-muted);padding:0 8px;display:flex;flex-direction:column;gap:6px}
+.who{display:flex;gap:9px;align-items:center;padding:10px 8px;border-top:1px solid color-mix(in srgb,var(--side-ink) 14%,transparent)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--peach);color:#2A1A2C;display:grid;place-items:center;font:800 12px var(--display)}
+
+.main{padding-block:22px 60px;padding-left:28px;padding-right:max(28px,env(safe-area-inset-right,0px));min-width:0;display:flex;flex-direction:column;gap:20px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.banner{display:flex;gap:10px;align-items:center;border-radius:12px;padding:9px 13px;background:var(--amber-soft);font-size:13.5px}
+.tag{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap}
+.tag.ok{background:var(--sage-soft);color:var(--sage)} .tag.warn{background:var(--amber-soft);color:var(--amber)}
+.tag.bad{background:var(--rose-soft);color:var(--rose)} .tag.plum{background:var(--plum-soft);color:var(--plum)}
+.tag.grey{background:var(--line);color:var(--muted)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.kpi{display:flex;flex-direction:column;gap:6px}
+.kpi b{font:800 30px/1 var(--display)}
+.kpi .delta{font-size:12.5px;font-weight:700}
+.up{color:var(--sage)} .down{color:var(--rose)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:99px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:99px;padding:8px 14px;font:700 13.5px var(--body);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn-p{background:var(--plum);color:var(--plum-ink)}
+.btn-s{background:var(--plum-soft);color:var(--ink)}
+.btn-g{background:transparent;color:var(--plum);padding-inline:6px}
+:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+
+.table-wrap{overflow-x:auto;margin-inline:-4px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+
+.queue-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+.queue-item:first-child{border-top:0;padding-top:0}
+.sev{flex:none;width:6px;align-self:stretch;border-radius:6px}
+.kanban{display:grid;grid-template-columns:repeat(6,minmax(170px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
+.col{background:color-mix(in srgb,var(--line) 45%,transparent);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:120px}
+.col h3{font-size:13px;display:flex;justify-content:space-between}
+.kc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.drawer{border:1.5px solid var(--plum);border-radius:16px;padding:16px;background:var(--surface);display:flex;flex-direction:column;gap:12px}
+textarea{width:100%;font:500 14px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-weight:700;font-size:13.5px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:30}
+.toast.show{opacity:1}
+svg text{font-family:var(--body)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+@media (max-width:1000px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g21,.g3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{position:sticky;top:0;height:auto;z-index:5;padding:10px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));gap:8px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+  .side .foot,.who{display:none}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px}
+  .nav a{white-space:nowrap;padding:7px 10px}
+  .main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .g4,.g2{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><svg width="26" height="26" viewBox="0 0 40 40" aria-hidden="true"><circle cx="15" cy="20" r="11" fill="var(--peach)"/><circle cx="25" cy="20" r="11" fill="#C66F9A" opacity=".9"/></svg>
+      <span>Second Episode<small>Team console</small></span></div>
+    <nav class="nav" id="nav" aria-label="Workspaces"></nav>
+    <div class="foot"><span>Example data only. No real patients.</span><span>Patients appear as pseudonymous IDs, never names.</span></div>
+    <div class="who"><span class="avatar">HP</span><span class="small"><b>Dr Hina Parvez</b><br><span style="color:var(--side-muted)">Clinical lead</span></span></div>
+  </aside>
+  <main class="main" id="view"></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- example data (pilot, 8 weeks) ---------- */
+const WEEKS=['16 Sep','23 Sep','30 Sep','7 Oct','14 Oct','21 Oct','28 Oct','4 Nov'];
+const SIGNUPS=[6,9,14,18,22,31,48,66]; // women logging their first episode each week, total 214
+const FUNNEL=[['Visited the site',3120],['Started the app',1240],['Logged an episode',214],['Met the recurrent definition',152],['Completed the pattern check',131],['Saw their ask-list',124],['Did the 2-week check-in',84],['Ask-list changed what was started',32]];
+const PATTERNS=[['Oestrogen-linked',52,'var(--peach)'],['Sex or cycle-linked',27,'var(--sage)'],['High antibiotic exposure',18,'var(--amber)'],['May not all be infections',19,'var(--rose)'],['No clear pattern yet',8,'var(--muted)']];
+const PRODUCTS=[['Second Episode kit',13,29],['Kit with pH strips',8,39],['The plan',14,19],['GP appointment',9,95],['Home urine test',15,39],['Vaginal health test',2,129]];
+
+let results=[
+ {id:'SE-1077',test:'Home urine test',recv:'10 Nov',summary:'Escherichia coli, more than 100,000 CFU/mL',sens:[['Nitrofurantoin','S'],['Fosfomycin','S'],['Pivmecillinam','S'],['Trimethoprim','R']],pattern:'High antibiotic exposure',status:'review'},
+ {id:'SE-1089',test:'Home urine test',recv:'11 Nov',summary:'No significant growth',sens:[],pattern:'May not all be infections',status:'review'},
+ {id:'SE-1102',test:'Home urine test',recv:'11 Nov',summary:'Mixed growth of 3 or more organisms, likely contamination',sens:[],pattern:'Oestrogen-linked',status:'review'}
+];
+let flags=[
+ {id:'SE-1110',when:'Today 09:12',flag:'Visible blood in urine',level:'Today',shown:'Urgent card: contact GP today',status:'open'},
+ {id:'SE-1093',when:'Yesterday 21:40',flag:'Fever, or pain in back or side',level:'Today',shown:'Urgent card: same-day GP or 111',status:'open'},
+ {id:'SE-1118',when:'Yesterday 15:05',flag:'Said she is worried',level:'Today',shown:'Urgent card: GP today or 111',status:'open'}
+];
+let overdue=[['SE-1044','2-week check-in','5 days overdue'],['SE-1051','2-week check-in','3 days overdue'],['SE-1060','6-week check-in','2 days overdue'],['SE-1031','3-month review','1 day overdue']];
+const STAGES=['Ordered','Requested from lab','Kit posted','Sample received','Result in','Released to patient'];
+let kits=[
+ {id:'SE-1125',test:'Urine',stage:0,days:0},{id:'SE-1122',test:'Urine',stage:0,days:1},
+ {id:'SE-1119',test:'Urine',stage:1,days:1},
+ {id:'SE-1114',test:'Urine',stage:2,days:2},{id:'SE-1108',test:'Urine',stage:2,days:4,note:'Not yet returned'},
+ {id:'SE-1099',test:'Urine',stage:3,days:1},
+ {id:'SE-1077',test:'Urine',stage:4,days:0,res:true},{id:'SE-1089',test:'Urine',stage:4,days:0,res:true},{id:'SE-1102',test:'Urine',stage:4,days:0,res:true},
+ {id:'SE-1066',test:'Urine',stage:5,days:3},{id:'SE-1058',test:'Urine',stage:5,days:6}
+];
+const APPTS=[['Today','14:00','SE-1084','Recurrent UTI review','Video','Shared'],['Today','17:30','SE-1097','Vaginal oestrogen or menopause','Phone','Shared'],['Fri 14 Nov','09:00','SE-1071','Recurrent UTI review','Video','Not shared'],['Fri 14 Nov','11:30','SE-1110','Recurrent UTI review','Video','Shared'],['Mon 17 Nov','19:30','SE-1103','Itching, discharge or a smell','Phone','Shared']];
+const RULES=[
+ ['Recurrence rule','2 in 6 months or 3 in 12','NICE NG112 · CKS','v1.0','Signed off','ok'],
+ ['Red-flag screen (UTI)','C1 to C7, plus "I\'m worried"','NICE NG12 · CKS','v0.2','Second clinician to review','warn'],
+ ['Red flags (sexual health)','Pelvic infection, ectopic, PEP within 72 h, assault','NHS · BASHH · FSRH','v0.1','Awaiting sign-off','warn'],
+ ['Pattern sort','10 questions, 4 patterns, ties to MIMIC','Navigator spec v0.1','v0.1','Weights provisional','grey'],
+ ['Ask-lists by pattern','2 to 4 asks, each referenced','NICE NG112 · CKS','v0.2','Check section numbers','warn'],
+ ['Evidence grades','Water A, cranberry B, D-mannose X','Hooton 2018 · Cochrane · MERIT','v0.1','Awaiting sign-off','warn'],
+ ['Over-the-counter oestrogen branch','50+ with no period for a year; hysterectomy to a prescriber','MHRA 2022','v0.1','Awaiting sign-off','warn'],
+ ['Bladder health score','4 parts, 25 points each','Team assumption','v0.1','Provisional until fitted to outcomes','grey']
+];
+const HAZARDS=[
+ ['H1','A woman with a kidney infection completes the pattern sort','Red-flag screen runs first and at every new episode. Urgency is never lowered. "I\'m worried" always routes to urgent.','Low','ok'],
+ ['H2','A woman reads "recurrent" as a diagnosis','Navigation wording only ("women in your situation are usually offered"), each line names its guideline.','Low','ok'],
+ ['H3','A lab result reaches the woman before a clinician has seen it','Results are held in the review queue and released only by a clinician.','Low','ok'],
+ ['H4','Over-the-counter oestrogen suggested to a woman who is not eligible','Branch on age 50+ and no period for a year. Everyone else is sent to a prescriber.','Medium','warn'],
+ ['H5','Her health record is exposed','Prototype keeps data on her device. Live product: encrypted UK database, DPIA, access logging.','Medium','warn'],
+ ['H6','Sensitive STI answers are stored','STI answers are never saved.','Low','ok']
+];
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pct=(a,b)=>Math.round(a/b*100);
+const money=n=>'£'+n.toLocaleString('en-GB');
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1900)}
+const IC={
+ overview:'<path d="M4 13h4v7H4zM10 8h4v12h-4zM16 4h4v16h-4z"/>',
+ queue:'<path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 10v4.5M12 17.2v.1"/>',
+ tests:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/>',
+ orders:'<path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+ appts:'<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+ rules:'<path d="M12 3 5 6v5.5c0 4.3 3 7.7 7 9.5 4-1.8 7-5.2 7-9.5V6l-7-3Z"/><path d="m9 12 2.2 2.2L15.5 10"/>'
+};
+const ic=(n,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+
+/* ---------- charts ---------- */
+function lineChart(){
+  const W=560,H=190,pl=34,pr=14,pt=16,pb=28,max=70;
+  const x=i=>pl+i*(W-pl-pr)/(SIGNUPS.length-1), y=v=>pt+(1-v/max)*(H-pt-pb);
+  const pts=SIGNUPS.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Women logging their first episode each week">
+   <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--plum)" stop-opacity=".25"/><stop offset="1" stop-color="var(--plum)" stop-opacity="0"/></linearGradient></defs>
+   ${[0,20,40,60].map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`).join('')}
+   <polygon points="${x(0)},${y(0)} ${pts} ${x(SIGNUPS.length-1)},${y(0)}" fill="url(#lg)"/>
+   <polyline points="${pts}" fill="none" stroke="var(--plum)" stroke-width="2.5" stroke-linejoin="round"/>
+   ${SIGNUPS.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i===SIGNUPS.length-1?5:3}" fill="${i===SIGNUPS.length-1?'var(--plum)':'var(--surface)'}" stroke="var(--plum)" stroke-width="2"/>`).join('')}
+   <text x="${x(SIGNUPS.length-1)-8}" y="${y(66)-4}" text-anchor="end" font-size="12" font-weight="700" fill="var(--ink)">66 this week</text>
+   ${WEEKS.map((w,i)=>i%2===1||i===WEEKS.length-1?`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${w}</text>`:'').join('')}
+  </svg>`;
+}
+function funnel(){
+  const top=FUNNEL[2][1];
+  return FUNNEL.slice(2).map(([l,v],i)=>`<div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,2fr) 64px;gap:10px;align-items:center;padding:5px 0">
+    <span class="small">${l}</span>
+    <div class="bar" style="height:14px"><span style="width:${v/top*100}%;background:${i===FUNNEL.length-3?'var(--sage)':'var(--plum)'};opacity:${1-i*.08}"></span></div>
+    <span class="small num" style="text-align:right"><b>${v}</b> <span class="muted">${i?pct(v,FUNNEL[i+1][1])+'%':''}</span></span></div>`).join('')
+   +`<p class="tiny muted" style="margin-top:8px">Percentages are of the step above. Before the app: ${FUNNEL[0][1].toLocaleString('en-GB')} site visits, ${FUNNEL[1][1].toLocaleString('en-GB')} app starts.</p>`;
+}
+function patternBars(){
+  const tot=PATTERNS.reduce((s,p)=>s+p[1],0);
+  return `<div style="display:flex;height:22px;border-radius:99px;overflow:hidden;gap:2px">${PATTERNS.map(p=>`<span style="width:${p[1]/tot*100}%;background:${p[2]}"></span>`).join('')}</div>
+   <div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">${PATTERNS.map(p=>`<div style="display:flex;gap:8px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:${p[2]};flex:none"></span><span class="small" style="flex:1">${p[0]}</span><b class="small num">${p[1]}</b><span class="tiny muted num" style="width:34px;text-align:right">${pct(p[1],tot)}%</span></div>`).join('')}</div>`;
+}
+function gate(label,val,target,display,tdisp){
+  const ok=val>=target;
+  return `<div><div style="display:flex;justify-content:space-between;gap:8px"><span class="small">${label}</span><span class="small num"><b>${display}</b> <span class="muted">/ ${tdisp}</span></span></div>
+   <div class="bar" style="margin-top:5px;position:relative"><span style="width:${Math.min(100,val/target*100)}%;background:${ok?'var(--sage)':'var(--amber)'}"></span></div>
+   <span class="tag ${ok?'ok':'warn'}" style="margin-top:6px">${ok?'Met':'Not yet'}</span></div>`;
+}
+
+/* ---------- views ---------- */
+function viewOverview(){
+  const rev=PRODUCTS.reduce((s,p)=>s+p[1]*p[2],0);
+  return `
+  <div class="topbar"><div><span class="eyebrow">Pilot · 16 Sep to 11 Nov 2026</span><h1>Overview</h1></div><span class="tag plum">Example data</span></div>
+  <div class="grid g4">
+    <div class="card kpi"><span class="eyebrow">Women logging</span><b class="num">214</b><span class="delta up">+66 this week</span></div>
+    <div class="card kpi"><span class="eyebrow">Completed pattern check</span><b class="num">61%</b><span class="tiny muted">131 of 214</span></div>
+    <div class="card kpi"><span class="eyebrow">Ask-list changed care</span><b class="num">38%</b><span class="tiny muted">32 of 84 at 2 weeks · the product-fit number</span></div>
+    <div class="card kpi"><span class="eyebrow">Red flags routed</span><b class="num">17</b><span class="tiny muted">All shown the urgent card</span></div>
+  </div>
+  <div class="grid g21">
+    <section class="card"><div class="card-head"><h2>New women logging, by week</h2><span class="tiny muted">first episode logged</span></div>${lineChart()}</section>
+    <section class="card"><div class="card-head"><h2>Launch gate</h2><span class="tiny muted">from the product strategy</span></div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        ${gate('Women logging',214,500,'214','500')}
+        ${gate('Completing the assessment',61,40,'61%','40%')}
+        ${gate('Ask-list changed what was started',38,33,'38%','33%')}
+      </div></section>
+  </div>
+  <div class="grid g21">
+    <section class="card"><div class="card-head"><h2>Journey</h2><span class="tiny muted">women at each step</span></div>${funnel()}</section>
+    <section class="card"><div class="card-head"><h2>Patterns</h2><span class="tiny muted">of 124 ask-lists</span></div>${patternBars()}</section>
+  </div>
+  <div class="grid g3">
+    <section class="card"><div class="card-head"><h2>Antibiotic courses</h2><span class="tag warn">−21% · target −30%</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+       ${[['12 months before joining',3.4,'var(--rose)'],['Since joining, per year',2.7,'var(--sage)']].map(([l,v,c])=>`<div><div style="display:flex;justify-content:space-between"><span class="small">${l}</span><b class="small num">${v}</b></div><div class="bar" style="height:12px;margin-top:4px"><span style="width:${v/4*100}%;background:${c}"></span></div></div>`).join('')}
+       <p class="tiny muted">Per woman per year, 41 women in for 3+ months. Self-reported, no comparison group yet.</p></div></section>
+    <section class="card"><div class="card-head"><h2>Vaginal oestrogen started</h2><span class="tag warn">56% · target 80%</span></div>
+      <b style="font:800 30px var(--display)" class="num">23 <span class="muted" style="font-size:16px;font-weight:600">of 41</span></b>
+      <p class="tiny muted" style="margin-top:6px">Eligible women with the oestrogen-linked pattern, at the 2-week check-in. 14 bought it over the counter.</p></section>
+    <section class="card"><div class="card-head"><h2>Paid conversion</h2><span class="tiny muted">of 214 logging</span></div>
+      <b style="font:800 30px var(--display)" class="num">${money(rev)}</b><span class="tiny muted"> demo revenue</span>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px">${[['Kit or plan',35],['Home test',17],['GP appointment',9]].map(([l,v])=>`<div style="display:flex;justify-content:space-between" class="small"><span>${l}</span><span class="num"><b>${v}</b> <span class="muted">${(v/214*100).toFixed(1)}%</span></span></div>`).join('')}</div></section>
+  </div>`;
+}
+
+let reviewing=null;
+function viewQueue(){
+  const rOpen=results.filter(r=>r.status==='review'), fOpen=flags.filter(f=>f.status==='open');
+  const r=reviewing&&results.find(x=>x.id===reviewing);
+  return `
+  <div class="topbar"><div><span class="eyebrow">Needs a clinician</span><h1>Clinical queue</h1></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag bad">${fOpen.length} red flags</span><span class="tag warn">${rOpen.length} results to review</span><span class="tag grey">${overdue.length} check-ins overdue</span></div></div>
+  ${r?`<section class="drawer" aria-label="Result review">
+     <div class="card-head" style="margin:0"><div><span class="eyebrow">Reviewing</span><h2><span class="mono">${r.id}</span> · ${r.test}</h2></div><button class="btn btn-g" data-act="closeReview">Close</button></div>
+     <div class="grid g2">
+      <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">Lab result · received ${r.recv}</span><b>${esc(r.summary)}</b>
+        ${r.sens.length?`<div class="table-wrap"><table><thead><tr><th>Antibiotic</th><th>Result</th></tr></thead><tbody>${r.sens.map(([a,s])=>`<tr><td>${a}</td><td><span class="tag ${s==='S'?'ok':'bad'}">${s==='S'?'Sensitive':'Resistant'}</span></td></tr>`).join('')}</tbody></table></div>`:'<p class="small muted">No sensitivities reported.</p>'}</div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">Her record</span><p class="small">Pattern: <b>${r.pattern}</b></p>
+        <p class="small muted">The app will add this result to her record and update her ask-list once you release it.</p>
+        <label for="note" class="small" style="font-weight:700">Note to the patient</label>
+        <textarea id="note" rows="3">${r.sens.length?'Your sample grew a common bladder bacterium. It is resistant to trimethoprim, so please show this result if you are offered antibiotics.':r.summary.startsWith('No')?'No infection was found. This supports asking for your other symptoms to be looked at, as in your ask-list.':'The sample was likely contaminated. We will send you a new kit; please follow the mid-stream steps in the leaflet.'}</textarea></div>
+     </div>
+     <div style="display:flex;gap:8px;flex-wrap:wrap">
+       <button class="btn btn-p" data-act="release" data-id="${r.id}">Release to patient</button>
+       ${r.summary.startsWith('Mixed')?`<button class="btn btn-s" data-act="repeat" data-id="${r.id}">Release and send a new kit</button>`:''}
+       <button class="btn btn-g" data-act="call" data-id="${r.id}">Mark: phone her first</button></div>
+   </section>`:''}
+  <div class="grid g2">
+   <section class="card"><div class="card-head"><h2>Red flags</h2><span class="tiny muted">the app showed the urgent card</span></div>
+     ${fOpen.length?fOpen.map(f=>`<div class="queue-item"><span class="sev" style="background:var(--rose)"></span><div style="flex:1;min-width:0"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="mono">${f.id}</span><span class="tag bad">${f.level}</span><span class="tiny muted">${f.when}</span></div>
+       <b class="small" style="display:block;margin-top:4px">${f.flag}</b><span class="tiny muted">${f.shown}</span></div>
+       <button class="btn btn-s" data-act="ackFlag" data-id="${f.id}">Follow up</button></div>`).join(''):'<p class="small muted">No open red flags.</p>'}</section>
+   <section class="card"><div class="card-head"><h2>Results to review</h2><span class="tiny muted">held until a clinician releases them</span></div>
+     ${rOpen.length?rOpen.map(x=>`<div class="queue-item"><span class="sev" style="background:${x.sens.some(s=>s[1]==='R')?'var(--amber)':'var(--plum)'}"></span><div style="flex:1;min-width:0"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="mono">${x.id}</span><span class="tiny muted">${x.test} · ${x.recv}</span></div>
+       <b class="small" style="display:block;margin-top:4px">${esc(x.summary)}</b></div>
+       <button class="btn btn-p" data-act="openReview" data-id="${x.id}">Review</button></div>`).join(''):'<p class="small muted">All results reviewed.</p>'}</section>
+  </div>
+  <section class="card"><div class="card-head"><h2>Overdue check-ins</h2><span class="tiny muted">the app has sent reminders</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Patient</th><th>Check-in</th><th>Status</th><th></th></tr></thead><tbody>
+    ${overdue.map(([id,t,s],i)=>`<tr><td class="mono">${id}</td><td>${t}</td><td><span class="tag warn">${s}</span></td><td style="text-align:right"><button class="btn btn-g" data-act="nudge" data-i="${i}">Send a nudge</button></td></tr>`).join('')}</tbody></table></div></section>`;
+}
+
+function viewTests(){
+  return `
+  <div class="topbar"><div><span class="eyebrow">Home tests through the lab partner</span><h1>Test kits</h1></div><span class="tag plum">Pilot: urine culture</span></div>
+  <div class="banner"><span>${ic('tests')}</span><span>Kits are requested in the lab's own ordering portal with "send self-collection kit to patient". No connection to the lab is needed for the pilot; the team moves each kit along here.</span></div>
+  <div class="kanban" role="list">${STAGES.map((s,si)=>{
+    const items=kits.filter(k=>k.stage===si);
+    return `<div class="col"><h3><span>${s}</span><span class="muted num">${items.length}</span></h3>
+     ${items.map(k=>`<div class="kc"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono">${k.id}</span><span class="tag grey">${k.test}</span></div>
+       <span class="tiny muted">${k.days===0?'Today':k.days+' day'+(k.days===1?'':'s')+' in this step'}</span>
+       ${k.note?`<span class="tag warn" style="align-self:flex-start">${k.note}</span>`:''}
+       ${si<3?`<button class="btn btn-s" data-act="advance" data-id="${k.id}">${['Request from lab','Mark kit posted','Mark sample received'][si]}</button>`
+        :si===3?`<button class="btn btn-s" data-act="advance" data-id="${k.id}">Result in</button>`
+        :si===4?`<a class="btn btn-p" href="#queue" data-act="toReview" data-id="${k.id}">Review result</a>`:'<span class="tag ok" style="align-self:flex-start">Released</span>'}
+     </div>`).join('')}</div>`}).join('')}</div>
+  <div class="grid g3">
+    <div class="card kpi"><span class="eyebrow">Kits ordered</span><b class="num">${kits.length}</b><span class="tiny muted">since the pilot began</span></div>
+    <div class="card kpi"><span class="eyebrow">Returned</span><b class="num">${kits.filter(k=>k.stage>=3).length}</b><span class="tiny muted">samples back at the lab</span></div>
+    <div class="card kpi"><span class="eyebrow">Rejected samples</span><b class="num">0</b><span class="tiny muted">rejection reasons to come from the lab</span></div>
+  </div>`;
+}
+
+function viewOrders(){
+  const rows=PRODUCTS.map(([n,q,p])=>({n,q,p,t:q*p})), tot=rows.reduce((s,r)=>s+r.t,0), max=Math.max(...rows.map(r=>r.t));
+  return `
+  <div class="topbar"><div><span class="eyebrow">Second Episode Plus</span><h1>Orders and revenue</h1></div><span class="tag plum">Demo checkout, no money taken</span></div>
+  <div class="grid g3">
+    <div class="card kpi"><span class="eyebrow">Revenue</span><b class="num">${money(tot)}</b><span class="tiny muted">pilot to date</span></div>
+    <div class="card kpi"><span class="eyebrow">Orders</span><b class="num">${rows.reduce((s,r)=>s+r.q,0)}</b><span class="tiny muted">from 61 women</span></div>
+    <div class="card kpi"><span class="eyebrow">Average per paying woman</span><b class="num">${money(Math.round(tot/61))}</b><span class="tiny muted">strategy assumes £60</span></div>
+  </div>
+  <section class="card"><div class="card-head"><h2>By product</h2></div>
+    <div class="table-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Sold</th><th>Revenue</th><th style="width:34%"></th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td><b>${r.n}</b></td><td class="num">${money(r.p)}</td><td class="num">${r.q}</td><td class="num"><b>${money(r.t)}</b></td><td><div class="bar" style="height:10px"><span style="width:${r.t/max*100}%;background:var(--plum)"></span></div></td></tr>`).join('')}
+    </tbody></table></div>
+    <p class="tiny muted" style="margin-top:10px">GP appointments earn the most from the fewest sales. That matches the strategy: the clinician service is the high-margin part.</p></section>`;
+}
+
+function viewAppts(){
+  return `
+  <div class="topbar"><div><span class="eyebrow">With the GP partner</span><h1>Appointments</h1></div><span class="tag plum">${APPTS.length} upcoming</span></div>
+  <section class="card"><div class="table-wrap"><table><thead><tr><th>Day</th><th>Time</th><th>Patient</th><th>Reason</th><th>Type</th><th>Record</th></tr></thead><tbody>
+  ${APPTS.map(a=>`<tr><td><b>${a[0]}</b></td><td class="num">${a[1]}</td><td class="mono">${a[2]}</td><td>${a[3]}</td><td>${a[4]}</td><td><span class="tag ${a[5]==='Shared'?'ok':'grey'}">${a[5]}</span></td></tr>`).join('')}
+  </tbody></table></div>
+  <p class="tiny muted" style="margin-top:10px">SE-1110 has an open red flag. The app told her to see her own GP today; this booking is for the follow-up review.</p></section>`;
+}
+
+function viewRules(){
+  return `
+  <div class="topbar"><div><span class="eyebrow">The clinical engine</span><h1>Rules and safety</h1></div><span class="tag warn">${RULES.filter(r=>r[5]!=='ok').length} items need sign-off</span></div>
+  <section class="card"><div class="card-head"><h2>Rules in the app</h2><span class="tiny muted">every change is versioned and signed off before release</span></div>
+   <div class="table-wrap"><table><thead><tr><th>Rule</th><th>What it does</th><th>Source</th><th>Version</th><th>Status</th></tr></thead><tbody>
+   ${RULES.map(r=>`<tr><td><b>${r[0]}</b></td><td>${esc(r[1])}</td><td class="small muted">${r[2]}</td><td class="mono">${r[3]}</td><td><span class="tag ${r[5]}">${r[4]}</span></td></tr>`).join('')}
+   </tbody></table></div></section>
+  <section class="card"><div class="card-head"><h2>Hazard log</h2><span class="tiny muted">ISO 14971 · DCB0129 later</span></div>
+   <div class="table-wrap"><table><thead><tr><th>ID</th><th>Hazard</th><th>How the product controls it</th><th>Residual risk</th></tr></thead><tbody>
+   ${HAZARDS.map(h=>`<tr><td class="mono">${h[0]}</td><td><b>${esc(h[1])}</b></td><td class="small">${esc(h[2])}</td><td><span class="tag ${h[4]}">${h[3]}</span></td></tr>`).join('')}
+   </tbody></table></div></section>`;
+}
+
+/* ---------- router ---------- */
+const ROUTES={overview:['Overview','overview',viewOverview],queue:['Clinical queue','queue',viewQueue],tests:['Test kits','tests',viewTests],orders:['Orders','orders',viewOrders],appts:['Appointments','appts',viewAppts],rules:['Rules and safety','rules',viewRules]};
+function route(){const h=location.hash.slice(1);return ROUTES[h]?h:'overview'}
+function render(top){
+  const r=route();
+  const qn=results.filter(x=>x.status==='review').length+flags.filter(f=>f.status==='open').length;
+  $('#nav').innerHTML=Object.entries(ROUTES).map(([k,[l,i]])=>`<a href="#${k}" class="${k===r?'on':''}" ${k===r?'aria-current="page"':''}>${ic(i)}<span>${l}</span>${k==='queue'&&qn?`<span class="count">${qn}</span>`:''}</a>`).join('');
+  $('#view').innerHTML=ROUTES[r][2]();
+  if(top) window.scrollTo({top:0});
+}
+window.addEventListener('hashchange',()=>render(true));
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]'); if(!el) return;
+  const a=el.dataset.act, id=el.dataset.id;
+  if(a==='openReview'){reviewing=id;render(true)}
+  if(a==='closeReview'){reviewing=null;render()}
+  if(a==='toReview'){reviewing=id}
+  if(a==='release'||a==='repeat'){
+    const r=results.find(x=>x.id===id); r.status='done'; reviewing=null;
+    const k=kits.find(x=>x.id===id); if(k){k.stage=5;k.days=0}
+    if(a==='repeat') kits.unshift({id,test:'Urine',stage:0,days:0,note:'Repeat kit'});
+    render(); toast(a==='repeat'?'Released. New kit added to Ordered':'Released to '+id);
+  }
+  if(a==='call'){toast('Marked: phone '+id+' before release')}
+  if(a==='ackFlag'){flags.find(f=>f.id===id).status='done';render();toast('Follow-up logged for '+id)}
+  if(a==='nudge'){toast('Nudge sent to '+overdue[+el.dataset.i][0]);overdue.splice(+el.dataset.i,1);render()}
+  if(a==='advance'){const k=kits.find(x=>x.id===id);k.stage++;k.days=0;delete k.note;render();toast(id+': '+STAGES[k.stage])}
+});
+render();
+</script>

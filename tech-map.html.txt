@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Second Episode Tech Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one page, top-to-bottom stack of four layers (what she sees → engine → back end → partners), governance band beside it on wide screens. */
+:root{
+  --bg:#FAF6F4; --surface:#FFFFFF; --ink:#2A1A2C; --muted:#6F5D70; --line:#EBDFE4;
+  --plum:#8E3B68; --plum-soft:#F5DFEA; --peach-soft:#FCEADF;
+  --sage:#4F7F68; --sage-soft:#DCEBE2; --amber:#9A6508; --amber-soft:#F8E8C6;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#181117; --surface:#241A23; --ink:#F6ECF1; --muted:#BCA9B7; --line:#3A2B37;
+  --plum:#E39BC0; --plum-soft:#45263A; --peach-soft:#3C2820; --sage:#8DC2A8; --sage-soft:#20352B; --amber:#E7B65C; --amber-soft:#3B2F1D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#181117; --surface:#241A23; --ink:#F6ECF1; --muted:#BCA9B7; --line:#3A2B37;
+  --plum:#E39BC0; --plum-soft:#45263A; --peach-soft:#3C2820; --sage:#8DC2A8; --sage-soft:#20352B; --amber:#E7B65C; --amber-soft:#3B2F1D; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:36px 56px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;line-height:1.05}
+h2{font-size:21px;font-weight:800}
+h3{font-size:16px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:14px} .tiny{font-size:12.5px}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--plum)}
+header{display:flex;flex-direction:column;gap:10px;max-width:720px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:13px;font-weight:700;white-space:nowrap}
+.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.built{background:var(--sage-soft);color:var(--sage)}
+.next{background:var(--amber-soft);color:var(--amber)}
+.partner{background:var(--plum-soft);color:var(--plum)}
+.live{background:var(--peach-soft);color:var(--ink)}
+
+.map{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;margin-top:30px}
+.layers{display:flex;flex-direction:column}
+.layer{border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.layer.l1{background:var(--peach-soft)}
+.layer.l2{background:var(--sage-soft)}
+.layer.l3{background:var(--surface);border:2px dashed var(--amber)}
+.layer.l4{background:var(--plum-soft)}
+.lhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.lhead .who{font-size:13.5px;color:var(--muted)}
+.boxes{display:grid;gap:10px}
+.boxes.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.boxes.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.boxes.c5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 13px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.box .t{display:flex;gap:9px;align-items:center}
+.box svg{flex:none;color:var(--plum)}
+.box p{font-size:13.5px;color:var(--muted)}
+.box .chip{align-self:flex-start;font-size:11.5px;padding:2px 9px}
+.arrow{display:flex;align-items:center;justify-content:center;gap:10px;height:44px;color:var(--muted);font-size:13px;font-weight:600}
+.arrow svg{color:var(--muted)}
+
+.gov{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;align-self:start;position:sticky;top:calc(16px + env(safe-area-inset-top,0px))}
+.gov ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.gov li{display:flex;flex-direction:column;gap:2px;padding-top:10px;border-top:1px solid var(--line)}
+.gov li:first-child{border-top:0;padding-top:0}
+.gov b{font-size:14.5px}
+.gov span{font-size:13px;color:var(--muted)}
+
+.compare{margin-top:34px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.col{border-radius:22px;padding:18px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.col ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+
+.phases{margin-top:34px;display:flex;flex-direction:column;gap:12px}
+.ptrack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.phase{border-radius:18px;padding:16px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;position:relative}
+.phase .when{font:800 14px var(--display);color:var(--plum)}
+.phase ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.phase .gate{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;margin-top:auto}
+.say{margin-top:34px;border-radius:22px;padding:20px 22px;background:var(--ink);color:var(--bg)}
+.say p{font:600 18px/1.45 var(--display);max-width:760px}
+.say .tiny{color:color-mix(in srgb,var(--bg) 70%,transparent);margin-top:10px;font-family:var(--body);font-weight:500}
+footer{margin-top:22px}
+
+@media (max-width:900px){
+  .map{grid-template-columns:minmax(0,1fr)}
+  .gov{position:static}
+  .boxes.c5{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:620px){
+  .boxes.c3,.boxes.c5,.boxes.c2,.compare,.ptrack{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Second Episode · MVP meeting</span>
+    <h1>How the product fits together.</h1>
+    <p class="muted">Four layers, from what a woman taps down to the partners who do the physical work. We build the software and the clinical logic. Labs, payments and GPs are partners.</p>
+    <div class="legend" aria-label="Key">
+      <span class="chip built">Built in the MVP</span>
+      <span class="chip next">We build next</span>
+      <span class="chip partner">Partner provides</span>
+      <span class="chip live">Live NHS links today</span>
+    </div>
+  </header>
+
+  <div class="map">
+    <div class="layers">
+
+      <section class="layer l1" aria-labelledby="l1h">
+        <div class="lhead"><h2 id="l1h">1 · What she sees</h2><span class="who">the front end: app or website</span></div>
+        <div class="boxes c2">
+          <div class="box"><div class="t">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg>
+            <h3>Second Episode (free)</h3></div>
+            <p>Urogenital front door, UTI log and pattern check, STI questions, prevention, counter summary, free NHS signposting.</p>
+            <span class="chip built">Built</span></div>
+          <div class="box"><div class="t">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+            <h3>Second Episode Plus (paid)</h3></div>
+            <p>Everything in free, plus home urine and vaginal tests, the kit, the plan and GP video or phone appointments.</p>
+            <span class="chip built">Built, with demo checkout</span></div>
+        </div>
+      </section>
+
+      <div class="arrow"><svg width="16" height="22" viewBox="0 0 16 22" aria-hidden="true"><path d="M8 1v18m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>her answers</div>
+
+      <section class="layer l2" aria-labelledby="l2h">
+        <div class="lhead"><h2 id="l2h">2 · The clinical engine</h2><span class="who">our IP: the navigator spec as code</span></div>
+        <div class="boxes c5">
+          <div class="box"><h3>Recurrence rule</h3><p>2 in 6 months or 3 in 12</p></div>
+          <div class="box"><h3>Red-flag screen</h3><p>Raises urgency, never lowers it</p></div>
+          <div class="box"><h3>Pattern sort</h3><p>10 questions, 4 patterns</p></div>
+          <div class="box"><h3>Ask-lists</h3><p>Each with its NICE reference</p></div>
+          <div class="box"><h3>Score and follow-ups</h3><p>2 weeks, 6 weeks, 3 months</p></div>
+        </div>
+        <span class="chip built">Built and working: runs inside the app today</span>
+      </section>
+
+      <div class="arrow"><svg width="16" height="22" viewBox="0 0 16 22" aria-hidden="true"><path d="M8 1v18m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>saved to her record</div>
+
+      <section class="layer l3" aria-labelledby="l3h">
+        <div class="lhead"><h2 id="l3h">3 · The back end</h2><span class="who">the tech side: built after the MVP</span></div>
+        <div class="boxes c3">
+          <div class="box"><div class="t">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+            <h3>Accounts and sign-in</h3></div><p>So her record follows her across phone and laptop.</p><span class="chip next">Next</span></div>
+          <div class="box"><div class="t">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8"/></svg>
+            <h3>Secure UK database</h3></div><p>Encrypted, UK-hosted. Today the record lives only in her browser.</p><span class="chip next">Next</span></div>
+          <div class="box"><div class="t">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 3 7.7 7 9.5 4-1.8 7-5.2 7-9.5V6l-7-3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg>
+            <h3>Consent and audit</h3></div><p>She chooses what a GP or lab sees, and every share is logged.</p><span class="chip next">Next</span></div>
+        </div>
+      </section>
+
+      <div class="arrow"><svg width="16" height="22" viewBox="0 0 16 22" aria-hidden="true"><path d="M8 1v18m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>connects to</div>
+
+      <section class="layer l4" aria-labelledby="l4h">
+        <div class="lhead"><h2 id="l4h">4 · Partners</h2><span class="who">we connect to them, we don't build them</span></div>
+        <div class="boxes c3">
+          <div class="box"><h3>Payments</h3><p>A card payment provider takes payment. We never see card details.</p><span class="chip partner">Partner</span></div>
+          <div class="box"><h3>Clinical lab</h3><p>Posts self-collection kits to her and runs the tests. The urine culture route already exists and is ready for the pilot.</p><span class="chip partner">Partner · in talks</span></div>
+          <div class="box"><h3>GP provider</h3><p>CQC-registered. Video and phone appointments, prescriptions, referral letters.</p><span class="chip partner">Partner</span></div>
+          <div class="box"><h3>Kit fulfilment</h3><p>Packs and posts the kit and test boxes.</p><span class="chip partner">Partner</span></div>
+          <div class="box"><h3>Reminders</h3><p>Text and email for check-ins and appointments.</p><span class="chip partner">Partner</span></div>
+          <div class="box"><h3>NHS services</h3><p>Clinic finders, SH:24 home kits, free HIV tests, NHS App.</p><span class="chip live">Live links</span></div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="gov" aria-labelledby="govh">
+      <span class="eyebrow">Wraps every layer</span>
+      <h2 id="govh">Safety and regulation</h2>
+      <ul>
+        <li><b>Navigation, not diagnosis</b><span>Built to Class I software-as-a-medical-device standards. Regulatory adviser to confirm.</span></li>
+        <li><b>UK GDPR and a DPIA</b><span>For a health record the woman holds herself.</span></li>
+        <li><b>ISO 14971 risk file</b><span>Kept from day one, with red-flag wording reviewed by a second clinician.</span></li>
+        <li><b>Partners carry their own status</b><span>Lab tests keep their UKCA IVD marking. GP care sits with a CQC-registered provider.</span></li>
+        <li><b>For the NHS route later</b><span>DTAC, DCB0129 clinical safety and DSPT.</span></li>
+      </ul>
+    </aside>
+  </div>
+
+  <section class="compare" aria-label="Prototype compared with live product">
+    <div class="col"><span class="chip built" style="align-self:flex-start">The prototype today</span>
+      <ul>
+        <li>Every screen a woman would use, on phone or desktop</li>
+        <li>The real decision logic producing a real ask-list</li>
+        <li>Record saved on her own device only</li>
+        <li>Shop, tests and GP booking as clickable demos, with no payment taken</li>
+        <li>Live links to free NHS services</li>
+        <li>A team console prototype: pilot metrics, clinical review queue, test kit tracking, and the rules and hazard log</li>
+      </ul></div>
+    <div class="col"><span class="chip next" style="align-self:flex-start">What the live product adds</span>
+      <ul>
+        <li>Sign-in and a secure UK database, so the record is safe and portable</li>
+        <li>Real payments, kit posting and lab results flowing in</li>
+        <li>Real GP appointments through the partner provider</li>
+        <li>Reminders by text and email</li>
+        <li>Outcome tracking: antibiotic courses per woman per year</li>
+      </ul></div>
+  </section>
+
+  <section class="phases" aria-labelledby="ph">
+    <h2 id="ph">Build in stages, each with a gate</h2>
+    <div class="ptrack">
+      <div class="phase"><span class="when">Now to 6 months · Launch</span>
+        <ul><li>Home urine test pilot through the lab's existing self-collection kit service, with no integration needed</li><li>Accounts and secure database</li><li>Payments, kit and plan</li><li>GP provider for reviews</li><li>First cohort through the team's networks</li></ul>
+        <p class="gate"><b>Gate:</b> 500 women logging; the ask-list changes what was started in a third of cases.</p></div>
+      <div class="phase"><span class="when">6 to 18 months · Evidence</span>
+        <ul><li>Lab partner results flowing into the record</li><li>12-month outcome cohort</li><li>One pharmacy chain recognising the printed card</li></ul>
+        <p class="gate"><b>Gate:</b> outcome data good enough to show a commissioner.</p></div>
+      <div class="phase"><span class="when">18 months and on · Scale</span>
+        <ul><li>NHS App and GP Connect read access</li><li>DTAC and DCB0129 for NHS buyers</li><li>Targeted test panel through an accredited lab</li></ul>
+        <p class="gate"><b>Gate:</b> NHS or pharmacy revenue before any spend on our own test.</p></div>
+    </div>
+  </section>
+
+  <section class="say">
+    <p>"The prototype is the full patient experience and the working clinical logic. Next we build the secure back end, then connect partners who already run labs, payments and GP care. We don't make a device or run a lab."</p>
+    <p class="tiny">One line for the meeting</p>
+  </section>
+
+  <footer class="tiny muted">Stages and gates from the Second Episode product strategy (29 Oct 2026). Partner names to be confirmed.</footer>
+</div>

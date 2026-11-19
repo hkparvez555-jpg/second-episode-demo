@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Second Episode Regulatory Pathway</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column. Decision path at the top, then who-regulates-what, staged pathway, standards table, adviser questions. */
+:root{
+  --bg:#FAF6F4; --surface:#FFFFFF; --ink:#2A1A2C; --muted:#6F5D70; --line:#EBDFE4;
+  --plum:#8E3B68; --plum-ink:#FFFFFF; --plum-soft:#F5DFEA; --peach-soft:#FCEADF;
+  --sage:#4F7F68; --sage-soft:#DCEBE2; --amber:#9A6508; --amber-soft:#F8E8C6; --rose:#B2304A; --rose-soft:#F8DADF;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#181117; --surface:#241A23; --ink:#F6ECF1; --muted:#BCA9B7; --line:#3A2B37;
+  --plum:#E39BC0; --plum-ink:#2A1222; --plum-soft:#45263A; --peach-soft:#3C2820; --sage:#8DC2A8; --sage-soft:#20352B;
+  --amber:#E7B65C; --amber-soft:#3B2F1D; --rose:#F08A9D; --rose-soft:#452029; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#181117; --surface:#241A23; --ink:#F6ECF1; --muted:#BCA9B7; --line:#3A2B37;
+  --plum:#E39BC0; --plum-ink:#2A1222; --plum-soft:#45263A; --peach-soft:#3C2820; --sage:#8DC2A8; --sage-soft:#20352B;
+  --amber:#E7B65C; --amber-soft:#3B2F1D; --rose:#F08A9D; --rose-soft:#452029; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);margin:0}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:36px 60px;display:flex;flex-direction:column;gap:34px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800;line-height:1.05}
+h2{font-size:22px;font-weight:800}
+h3{font-size:16px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:14px} .tiny{font-size:12.5px}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--plum)}
+.sec{display:flex;flex-direction:column;gap:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:700;white-space:nowrap;align-self:flex-start}
+.ok{background:var(--sage-soft);color:var(--sage)} .warn{background:var(--amber-soft);color:var(--amber)}
+.plum{background:var(--plum-soft);color:var(--plum)} .grey{background:var(--line);color:var(--muted)}
+
+.verdict{border-radius:24px;background:var(--plum);color:var(--plum-ink);padding:24px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:center}
+.verdict h2{font-size:clamp(24px,3.4vw,32px)}
+.verdict .line{font-size:15px;opacity:.9;margin-top:8px}
+.verdict .quote{background:color-mix(in srgb,var(--plum-ink) 12%,transparent);border-radius:16px;padding:14px 16px;font:600 16px/1.4 var(--display)}
+.verdict .quote span{display:block;font:500 12.5px var(--body);opacity:.8;margin-top:6px}
+
+.tree{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;position:relative}
+.q .n{width:28px;height:28px;border-radius:50%;background:var(--plum-soft);color:var(--plum);display:grid;place-items:center;font:800 13px var(--display)}
+.q .ans{font:800 18px var(--display)}
+.q p{font-size:14px;color:var(--muted)}
+
+.who{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.who .box{border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line)}
+.who .box.us{border:2px solid var(--plum)}
+.who .box p{font-size:13.5px;color:var(--muted)}
+
+.stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:s}
+.stage{border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.stage.s1{background:var(--sage-soft)} .stage.s2{background:var(--peach-soft)} .stage.s3{background:var(--plum-soft)}
+.stage ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.stage li{display:flex;gap:9px;font-size:14.5px;align-items:flex-start}
+.stage li::before{content:"";flex:none;width:16px;height:16px;border-radius:5px;border:2px solid var(--ink);opacity:.45;margin-top:3px}
+.stage li.done::before{background:var(--sage);border-color:var(--sage);opacity:1}
+.stage .gate{font-size:13.5px;border-top:1px solid color-mix(in srgb,var(--ink) 15%,transparent);padding-top:10px;margin-top:auto}
+
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+
+.ip{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.ip blockquote{margin:0;font-size:16px;line-height:1.6;border-left:3px solid var(--plum);padding-left:14px}
+.safety{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.safety .box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.qs{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+
+@media (max-width:860px){.tree,.safety{grid-template-columns:repeat(2,minmax(0,1fr))}.who,.stages{grid-template-columns:minmax(0,1fr)}.verdict{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.tree,.safety{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+  <header class="sec" style="gap:10px;max-width:740px">
+    <span class="eyebrow">Second Episode · BiteLabs problem statement 3</span>
+    <h1>Our regulatory pathway.</h1>
+    <p class="muted">Is it a medical device, which class, which standards apply, and our plan to meet them. Draft for mentor review; classification to be confirmed by a regulatory adviser.</p>
+  </header>
+
+  <section class="verdict" aria-label="Our position">
+    <div><span class="eyebrow" style="color:inherit;opacity:.85">Our position</span>
+      <h2>Class I software as a medical device, built to Class IIa standards.</h2>
+      <p class="line">The navigator triages urgency, sorts likely causes and interprets test results, so it has a medical purpose under UK MDR 2002. We register it, and build to IIa now because MHRA reform is expected to move software like this up a class.</p></div>
+    <div class="quote">"Nothing physical we make is a device. The navigator is built and registered as Class I software, to IIa standards."<span>Updated line for the pitch</span></div>
+  </section>
+
+  <section class="sec" aria-labelledby="t1">
+    <h2 id="t1">How we got there</h2>
+    <div class="tree">
+      <div class="q"><span class="n">1</span><h3>Does the software have a medical purpose?</h3><span class="ans">Yes</span><p>It screens red flags and tells women how urgently to seek care, assigns a likely pattern, and turns lab results into recommendations. MHRA treats triage tools like this as devices.</p></div>
+      <div class="q"><span class="n">2</span><h3>Is it AI?</h3><span class="ans">No</span><p>Fixed clinical rules from our navigator spec, each traceable to a guideline. Adding AI later would bring extra requirements.</p></div>
+      <div class="q"><span class="n">3</span><h3>Which class today?</h3><span class="ans">Class I</span><p>Under UK MDR 2002, standalone software like this is generally Class I: we declare conformity ourselves, register with MHRA and apply the UKCA mark.</p></div>
+      <div class="q"><span class="n">4</span><h3>Which class next?</h3><span class="ans">Likely IIa</span><p>Planned MHRA reform follows the EU approach, where decision-support software is usually IIa and needs an Approved Body. Building to IIa now avoids a rebuild.</p></div>
+    </div>
+  </section>
+
+  <section class="ip" aria-labelledby="t2">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><h2 id="t2">Draft intended purpose</h2><span class="chip warn">Draft · adviser to review</span></div>
+    <blockquote>Second Episode is software for women aged 16 and over who have had urinary infection symptoms more than once. It records her episodes, identifies when they meet the NICE definition of recurrent UTI, screens for red-flag symptoms and directs her to the right urgency of care, and gives guideline-referenced information on care options to discuss with a clinician. It does not diagnose, prescribe or replace clinical assessment.</blockquote>
+    <p class="tiny muted">Every regulatory decision follows from this paragraph, so it is the first thing to agree with the adviser.</p>
+  </section>
+
+  <section class="sec" aria-labelledby="t3">
+    <h2 id="t3">Who regulates what</h2>
+    <div class="who">
+      <div class="box us"><span class="chip plum">Us · manufacturer</span><h3>The navigator app</h3><p>Class I software as a medical device. Our technical file, our risk management, our UKCA mark.</p></div>
+      <div class="box us"><span class="chip plum">Us · data controller</span><h3>Her health record</h3><p>UK GDPR special category data. Our DPIA, ICO registration and data agreements.</p></div>
+      <div class="box"><span class="chip grey">Not a device</span><h3>Kit box and printed card</h3><p>Printed information and packaging. No health claims on any insert.</p></div>
+      <div class="box"><span class="chip ok">Lab partner</span><h3>Home tests and collection kits</h3><p>The lab's own IVD marking, run in a UKAS ISO 15189 accredited lab.</p></div>
+      <div class="box"><span class="chip ok">Maker</span><h3>Vaginal pH strips</h3><p>The maker's UKCA self-test marking. We have distributor duties only.</p></div>
+      <div class="box"><span class="chip ok">GP partner</span><h3>Clinician review</h3><p>A CQC-registered provider, kept separate from the app.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="t4">
+    <h2 id="t4">The pathway</h2>
+    <div class="stages">
+      <div class="stage s1"><span class="eyebrow" style="color:var(--sage)">Stage 1 · before the pilot</span><h3>Make it safe to put in women's hands</h3>
+        <ul>
+          <li class="done">Hazard log started (6 hazards, with controls)</li>
+          <li class="done">Red flags raise urgency, never lower it</li>
+          <li class="done">Results held until a clinician releases them</li>
+          <li>Agree the intended purpose with a regulatory adviser</li>
+          <li>Clinical Safety Officer training (Dr Hina Parvez)</li>
+          <li>DPIA, ICO registration, privacy notice</li>
+          <li>Data processing agreement with the lab partner</li>
+          <li>Second-clinician sign-off on 7 open rules</li>
+        </ul>
+        <p class="gate"><b>Gate:</b> adviser confirms the position and the DPIA is signed.</p></div>
+      <div class="stage s2"><span class="eyebrow">Stage 2 · before public launch</span><h3>Register the navigator</h3>
+        <ul>
+          <li>Quality system aligned to ISO 13485</li>
+          <li>Technical file: IEC 62304 software lifecycle, ISO 14971 risk file, usability (IEC 62366)</li>
+          <li>Clinical evaluation against NICE NG112 and NG12</li>
+          <li>DCB0129 clinical safety case report</li>
+          <li>Cyber Essentials</li>
+          <li>MHRA registration and UKCA mark</li>
+          <li>Post-market surveillance plan</li>
+        </ul>
+        <p class="gate"><b>Gate:</b> Class I declaration signed and registered.</p></div>
+      <div class="stage s3"><span class="eyebrow">Stage 3 · NHS route, 18 months on</span><h3>Make it buyable by the NHS</h3>
+        <ul>
+          <li>DTAC: clinical safety, data protection, security, interoperability, accessibility</li>
+          <li>DSPT before any NHS record access</li>
+          <li>Safety case handed to each buyer for their DCB0160</li>
+          <li>Move to Class IIa if MHRA reform requires it</li>
+        </ul>
+        <p class="gate"><b>Gate:</b> outcome data a commissioner accepts.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="t5">
+    <h2 id="t5">Standards that apply</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Standard</th><th>What it covers</th><th>When</th><th>Owner</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><b>UK MDR 2002</b></td><td>Software as a medical device, Class I</td><td>Before launch</td><td>Us</td><td><span class="chip warn">Planned</span></td></tr>
+        <tr><td><b>UK GDPR + DPIA</b></td><td>Health data, consent, data agreements, UK hosting</td><td>Before pilot</td><td>Us</td><td><span class="chip warn">To do</span></td></tr>
+        <tr><td><b>DCB0129</b></td><td>Manufacturer clinical risk management, Clinical Safety Officer, safety case</td><td>Before pilot, then ongoing</td><td>Us</td><td><span class="chip ok">Hazard log started</span></td></tr>
+        <tr><td><b>DCB0160</b></td><td>Clinical risk when an organisation deploys the product</td><td>NHS route</td><td>Buyer</td><td><span class="chip grey">Not ours</span></td></tr>
+        <tr><td><b>DTAC</b></td><td>NHS assessment of digital health products</td><td>NHS route</td><td>Us</td><td><span class="chip grey">Build towards</span></td></tr>
+        <tr><td><b>DSPT</b></td><td>Data security for NHS data access</td><td>NHS route</td><td>Us</td><td><span class="chip grey">Later</span></td></tr>
+        <tr><td><b>ISO 14971 · IEC 62304 · IEC 62366</b></td><td>Risk, software lifecycle, usability</td><td>Before launch</td><td>Us</td><td><span class="chip ok">Risk file started</span></td></tr>
+        <tr><td><b>Cyber Essentials · WCAG 2.2 AA</b></td><td>Security baseline and accessibility</td><td>Before launch</td><td>Us</td><td><span class="chip warn">To do</span></td></tr>
+        <tr><td><b>CQC</b></td><td>The paid clinician review</td><td>At launch</td><td>GP partner</td><td><span class="chip grey">Partner</span></td></tr>
+        <tr><td><b>ASA/CAP · medicines advertising</b></td><td>Claims and advertising; no prescription-only medicines advertised</td><td>At launch</td><td>Us</td><td><span class="chip ok">Built into wording</span></td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section class="sec" aria-labelledby="t6">
+    <h2 id="t6">Safety built into the product</h2>
+    <div class="safety">
+      <div class="box"><h3>Urgency only goes up</h3><p class="small muted">Red flags run first and at every new episode. "I'm worried" always routes to urgent care.</p></div>
+      <div class="box"><h3>Clinician releases results</h3><p class="small muted">No lab result reaches a woman before a clinician has reviewed it.</p></div>
+      <div class="box"><h3>Navigation wording</h3><p class="small muted">Never "you have". Every suggestion names the guideline behind it.</p></div>
+      <div class="box"><h3>Least data possible</h3><p class="small muted">Pseudonymous IDs for staff. STI answers are never stored.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="t7">
+    <h2 id="t7">Questions for the regulatory adviser</h2>
+    <ol class="qs">
+      <li>Does our draft intended purpose make the navigator Class I, or could narrower wording keep it outside device regulation?</li>
+      <li>Is the red-flag triage the part that makes it a device, and does building it to IIa now make sense?</li>
+      <li>Does translating a partner lab result into an ask-list change our class?</li>
+      <li>As a distributor of the pH strips, what records and vigilance reporting do we need?</li>
+      <li>What is the expected timing of MHRA's pre-market reforms for software?</li>
+    </ol>
+  </section>
+
+  <footer>Sources: UK Medical Devices Regulations 2002; MHRA guidance on software and AI as a medical device; NHS England DTAC; DCB0129 and DCB0160 clinical risk management standards; UK GDPR and the Data Protection Act 2018. Draft for discussion, not regulatory advice.</footer>
+</div>

@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/app.html" },
+    { "source": "/plus", "destination": "/app.html" },
+    { "source": "/free", "destination": "/app.html" }
+  ]
+}
