@@ -160,7 +160,8 @@ let kits=[
 const APPTS=[['Today','14:00','SE-1084','Recurrent UTI review','Video','Shared'],['Today','17:30','SE-1097','Vaginal oestrogen or menopause','Phone','Shared'],['Fri 14 Nov','09:00','SE-1071','Recurrent UTI review','Video','Not shared'],['Fri 14 Nov','11:30','SE-1110','Recurrent UTI review','Video','Shared'],['Mon 17 Nov','19:30','SE-1103','Itching, discharge or a smell','Phone','Shared']];
 const RULES=[
  ['Recurrence rule','2 in 6 months or 3 in 12','NICE NG112 · CKS','v1.0','Signed off','ok'],
- ['Red-flag screen (UTI)','C1 to C7, plus "I\'m worried"','NICE NG12 · CKS','v0.2','Second clinician to review','warn'],
+ ['Red-flag screen (UTI)','C1 to C11, plus "I\'m worried"','NICE NG12 · CKS · AoMRC EBI 2024','v0.3','Referral criteria added after urology advice','warn'],
+ ['Ultrasound and urology referral','Kidney and bladder ultrasound for all; refer only if abnormal or a referral criterion applies; advice and guidance first','AoMRC EBI 2024 (GIRFT partner)','v0.1','Advised by urology clinical director and lead','ok'],
  ['Red flags (sexual health)','Pelvic infection, ectopic, PEP within 72 h, assault','NHS · BASHH · FSRH','v0.1','Awaiting sign-off','warn'],
  ['Pattern sort','10 questions, 4 patterns, ties to MIMIC','Navigator spec v0.1','v0.1','Weights provisional','grey'],
  ['Ask-lists by pattern','2 to 4 asks, each referenced','NICE NG112 · CKS','v0.2','Check section numbers','warn'],

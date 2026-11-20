@@ -232,13 +232,17 @@ const SETTLED={fully:'Fully',partly:'Partly',no:'No'};
 const TIMING={sex:'Within 2 days of sex',period:'Around a period',none:'No pattern',notsure:'Not sure'};
 
 const SAFETY=[
- {id:'c1',q:'I have seen blood in my urine, even once',level:3,act:'Contact your GP today.',why:'Visible blood in urine always needs a proper assessment. Over 45, a referral is usual.',ref:'NICE NG12 1.6.1'},
- {id:'c2',q:'I have been told a dipstick or sample showed blood more than once, without an infection',level:2,act:'Book a GP review within a week.',why:'Blood that keeps showing up on a dipstick needs investigating.',ref:'NICE NG12 1.6.2'},
+ {id:'c1',q:'I have seen blood in my urine, even once, including after an infection was treated',level:3,act:'Contact your GP today.',why:'Visible blood in urine always needs a proper assessment, especially if it is still there after the infection has cleared. Over 45, a referral is usual.',ref:'NICE NG12 1.6.1 · AoMRC EBI 2024, 2.3'},
+ {id:'c2',q:'I have been told a dipstick or sample showed blood more than once, without an infection or after it had cleared',level:2,act:'Book a GP review within a week.',why:'Blood that keeps showing up once the infection has gone needs investigating.',ref:'NICE NG12 1.6.2 · AoMRC EBI 2024, 2.3'},
  {id:'c3',q:'I have a fever, shivering, or pain in my back or side under the ribs',level:3,act:'Get same-day care: your GP, or 111 if the surgery is closed.',why:'These can be signs of a kidney infection.',ref:'NICE CKS pyelonephritis'},
  {id:'c4',q:'I am pregnant, or could be',level:3,act:'Contact your GP or midwife today.',why:'UTIs in pregnancy are looked after differently.',ref:'NICE CKS UTI (lower) women'},
  {id:'c5',q:'My symptoms did not settle after two courses of antibiotics in a row',level:2,act:'Book a GP review within a week, with a urine sample sent to the lab.',why:'Infections that do not clear need a lab result to guide treatment.',ref:'NICE CKS recurrent UTI'},
  {id:'c6',q:'I am 60 or over, and the infections keep coming back despite treatment',level:1,act:'Book a routine GP review to talk about referral.',why:'NICE lists this as something a GP should consider looking into further.',ref:'NICE NG12 1.6.4'},
- {id:'c7',q:'I have a catheter, a known kidney or bladder problem, or a condition or medicine that lowers my immunity',level:0,act:'Your GP should lead your care.',why:'You can keep using the log and summary here, but the pattern check is not designed for you.',ref:'NICE CKS recurrent UTI'}
+ {id:'c7',q:'I have a catheter, a known kidney or bladder problem, or a condition or medicine that lowers my immunity',level:0,act:'Your GP should lead your care.',why:'You can keep using the log and summary here, but the pattern check is not designed for you.',ref:'NICE CKS recurrent UTI'},
+ {id:'c8',q:'I have had surgery on my bladder or urinary tract, prolapse surgery, or an injury to my pelvis',level:1,act:'Book a routine GP review to talk about a urology referral.',why:'National guidance says women with recurrent UTIs after this kind of surgery or injury should be offered a referral.',ref:'AoMRC EBI 2024, 2.1'},
+ {id:'c9',q:'I have had cancer in my pelvis or abdomen',level:1,act:'Book a routine GP review to talk about a urology referral.',why:'National guidance says women with recurrent UTIs and a past pelvic or abdominal cancer should be offered a referral.',ref:'AoMRC EBI 2024, 2.2'},
+ {id:'c10',q:'I have noticed air bubbles or bits of stool in my urine',level:2,act:'Book a GP review within a week.',why:'This can be a sign of a connection between the bowel and the bladder, which needs a specialist to look at it.',ref:'AoMRC EBI 2024, 2.6'},
+ {id:'c11',q:'I find it hard to empty my bladder: I strain, have a weak stream, or struggle to start',level:1,act:'Book a routine GP review to talk about a urology referral.',why:'Difficulty emptying the bladder can keep infections coming back and is a reason to be referred.',ref:'AoMRC EBI 2024, 2.7'}
 ];
 const LEVEL_TXT={3:'Today',2:'Within a week',1:'Routine GP review',0:'GP-led care'};
 
@@ -278,7 +282,8 @@ function askBank(a){
    habits:{t:'Simple habits that help: pass urine after sex, avoid spermicide, and drink an extra 1.5 litres of water a day if you drink little.',ref:'NICE CKS self-care',g:'A'},
    cranberry:{t:'Cranberry products may modestly reduce repeat infections for some women. Optional, not a must.',ref:'Cochrane review 2023',g:'B'},
    labGuided:{t:'A resistant bug was found before, so ask that antibiotics are chosen from the lab result, not guessed.',ref:'NICE NG112 1.1.6'},
-   referral:{t:'Ask whether a referral is appropriate if prevention has not worked after six months.',ref:'NICE CKS recurrent UTI'},
+   referral:{t:'If prevention has not worked and your ultrasound was normal, ask your GP to get specialist advice from urology (advice and guidance). Most women do not need a referral.',ref:'AoMRC EBI 2024, rec 4 · NICE CKS recurrent UTI'},
+   ultrasound:{t:'Ask for a kidney and bladder ultrasound, including a check of how much urine is left after you wee. If it is normal, most women can be looked after by their GP.',ref:'AoMRC EBI 2024, rec 1'},
    vagAssess:{t:'Ask for the vaginal symptoms to be looked at too: a swab, or an examination for dryness.',ref:'NICE CKS vaginal discharge · CKS menopause'},
    bladder:{t:'Ask whether bladder pain syndrome or an overactive bladder could be playing a part.',ref:'NICE CKS LUTS in women'},
    selfcare:{t:'Keep up the self-care basics: fluids, passing urine after sex, and pain relief such as paracetamol.',ref:'NICE CKS self-care'},
@@ -339,10 +344,11 @@ function buildPlan(){
   const a=state.assessment.answers, r=assign(a), bank=askBank(a);
   const main=asksFor(r.primary,a);
   const extra=[];
+  if(!main.includes('ultrasound')) extra.push('ultrasound'); // every woman with recurrent UTI: KUB ultrasound with post-void residual (EBI 2024, rec 1)
   if(r.secondary) for(const id of asksFor(r.secondary,a)) if(!main.includes(id)&&!extra.includes(id)) extra.push(id);
   if(r.expoAddon) for(const id of ['culture','methenamine']) if(!main.includes(id)&&!extra.includes(id)&&!(id==='culture'&&main.includes('cultureShare'))) extra.push(id);
   for(const id of state.extraAsks) if(!main.includes(id)&&!extra.includes(id)) extra.push(id);
-  return {...r,main:main.map(id=>({id,...bank[id]})),extra:extra.slice(0,3).map(id=>({id,...bank[id]}))};
+  return {...r,main:main.map(id=>({id,...bank[id]})),extra:extra.slice(0,4).map(id=>({id,...bank[id]}))};
 }
 
 /* Bladder health score: a summary of her own logged record, not a prediction. Weights are provisional. */
@@ -830,7 +836,7 @@ function followForm(nx,p){
      <div class="field"><span class="lbl">Any side effects from what was started?</span><div class="pills">${['yes','no'].map(v=>`<button class="pill ${fuDraft.side===v?'on':''}" data-act="fuSet" data-id="side" data-v="${v}">${v==='yes'?'Yes':'No'}</button>`).join('')}</div></div>
      <button class="btn btn-primary btn-block" data-act="fuSave" data-k="6w">Save check-in</button></section>`;
   const rec=isRecurrentAt(iso(today()));
-  return `<section class="card stack">${head}<p class="small">${rec?'You still meet the recurrent definition. If prevention is in place, we will add a referral ask to your list.':'You no longer meet the recurrent definition. That is a good sign.'}</p>
+  return `<section class="card stack">${head}<p class="small">${rec?'You still meet the recurrent definition. If prevention is in place, we will add an ask for your GP to get urology advice. Most women do not need a referral if their ultrasound is normal.':'You no longer meet the recurrent definition. That is a good sign.'}</p>
     <button class="btn btn-primary btn-block" data-act="fuSave" data-k="3m">Run the 3-month review</button></section>`;
 }
 
@@ -1344,7 +1350,7 @@ document.addEventListener('click',e=>{
      if(k==='6w'){state.followups['6w']={date:t,newEp:fuDraft.newEp==='yes',side:fuDraft.side==='yes'}; if(fuDraft.newEp==='yes'){fuDraft={};save();toast('Saved. Log the new episode');go('log');return}}
      if(k==='3m'){const rec=isRecurrentAt(t);const prev=state.followups['2w']&&Object.values(state.followups['2w'].asks).includes('started');
        if(rec&&prev&&!state.extraAsks.includes('referral')) state.extraAsks.push('referral');
-       state.followups['3m']={date:t,msg:rec?(prev?'Still recurrent on prevention: referral ask added to your list.':'Still recurrent. Nothing has been started yet, so the first asks still apply.'):'No longer meets the recurrent definition.'}}
+       state.followups['3m']={date:t,msg:rec?(prev?'Still recurrent on prevention: an ask for urology advice has been added to your list.':'Still recurrent. Nothing has been started yet, so the first asks still apply.'):'No longer meets the recurrent definition.'}}
      fuDraft={}; save(); toast('Check-in saved'); render(true); break;}
    case 'delEp': state.episodes=state.episodes.filter(x=>x.id!==el.dataset.id); save(); render(); toast('Episode removed'); break;
    case 'testSrc': testDraft.source=el.dataset.v; render(); break;
