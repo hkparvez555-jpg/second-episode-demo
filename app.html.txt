@@ -746,6 +746,7 @@ function viewPlan(){
       <a href="#gp" class="card" style="text-decoration:none;color:inherit"><span style="color:var(--accent)">${ic('heart',26)}</span><h3 style="font-size:16px;margin-top:6px">Talk it through with a GP</h3><p class="tiny muted">Video or phone, with your record shared</p></a>
       <a href="#shop" class="card" style="text-decoration:none;color:inherit"><span style="color:var(--accent)">${ic('bag',26)}</span><h3 style="font-size:16px;margin-top:6px">Get the kit</h3><p class="tiny muted">Card, sample pot and signposts, posted</p></a></div>`
     :`<a class="card" href="https://www.nhs.uk/nhs-app/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center"><span style="color:var(--accent)">${ic('heart',26)}</span><span style="flex:1"><b>Book with your own GP</b><span class="tiny muted" style="display:block">Through the NHS App, free</span></span>${ic('arrow',20)}</a>`}
+   ${recurrentSince()?scanCard():''}
    ${bausLeaflet()}
    ${evidenceCard()}
    <p class="tiny muted" style="text-align:center">Generated from your own answers to support a conversation. Not a diagnosis. Guideline section numbers to be checked against the current versions before patient use.</p>
@@ -1196,7 +1197,7 @@ function viewResult(){
 }
 
 /* ---------------- GP appointments (Plus only) ---------------- */
-const GP_REASONS=[['uti','Recurrent UTI review'],['oest','Vaginal oestrogen or menopause symptoms'],['vag','Itching, discharge or a smell'],['other','Something else']];
+const GP_REASONS=[['uti','Recurrent UTI review'],['scan','Ultrasound scan referral'],['oest','Vaginal oestrogen or menopause symptoms'],['vag','Itching, discharge or a smell'],['other','Something else']];
 const GP_TIMES=['09:00','11:30','14:00','17:30','19:30'];
 let gp={reason:'',mode:'video',day:'',time:'',share:true}; let gpDone=null;
 function gpDays(){const out=[];let d=today();while(out.length<6){d=new Date(d.getTime()+DAY);if(d.getDay()!==0)out.push(iso(d))}return out}
@@ -1256,6 +1257,19 @@ const PREVENT=[
   ['lens','Cervical screening','Invited every 3 to 5 years from 25 to 64. Book when your letter comes.','','NHS cervical screening'],
   ['flask','Get a sample tested','With every UTI, ask for a urine sample to go to the lab before antibiotics.','','NICE NG112 1.1.5']]}
 ];
+function scanCard(){
+  const step=(n,t,s)=>`<div class="ask"><span class="n">${n}</span><div style="flex:1;min-width:0"><b>${t}</b><p class="small muted">${s}</p></div></div>`;
+  return `<section class="card stack" style="border-color:var(--sage);border-width:1.5px">
+   <div class="card-head"><h3>Your kidney and bladder scan</h3><span class="tag ok">Recommended</span></div>
+   <p class="small">If your infections keep coming back after the first steps (a urine sample sent to the lab, and prevention such as methenamine or vaginal oestrogen), the next step is an ultrasound, not usually a specialist.</p>
+   ${step(1,'The scan','An ultrasound of your kidneys and bladder, with a check of how much urine is left after you wee.')}
+   ${PAID?step(2,'Referral by our partner GP','After a review, our GP can refer you for an NHS ultrasound. Your record and ask-list go with the request.')
+         :step(2,'Ask your own GP','Show your ask-list and ask your GP to request the scan. It is free on the NHS.')}
+   ${step(3,'Take the result back to your GP','Book a follow-up with your own GP to go through the report. If it is normal, most women stay with their GP. If it is not, or more than 150 ml is left behind, your GP can get urology advice.')}
+   ${PAID?`<button class="btn btn-primary btn-block" data-act="gpScan">Book a scan referral review · ${money(95)}</button><p class="tiny muted">With your consent, the scan report is also sent to your own GP.</p>`
+         :`<a class="btn btn-soft btn-block" href="#card">Show my ask-list to my GP</a>`}
+   <p class="tiny muted">GIRFT urology A&G 2024 · AoMRC EBI 2024 recurrent UTI. If you see blood in your urine after the infection has cleared, ask for an urgent check, not a routine scan.</p></section>`;
+}
 function bausLeaflet(){
   return `<a class="card" href="https://www.baus.org.uk/_userfiles/pages/files/Patients/Leaflets/Recurrent%20cystitis.pdf" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center">
     <span style="color:var(--sage)">${ic('list',26)}</span><span style="flex:1;min-width:0"><b>Self-help leaflet: recurrent cystitis</b><span class="tiny muted" style="display:block">British Association of Urological Surgeons · recommended by GIRFT</span></span>${ic('arrow',20)}</a>`;
@@ -1369,6 +1383,7 @@ document.addEventListener('click',e=>{
    case 'delTest': state.tests=state.tests.filter(x=>x.id!==el.dataset.id); save(); render(); break;
    case 'gpSet': gp[el.dataset.f]=el.dataset.v; if(el.dataset.f==='day') gp.time=''; render(); break;
    case 'gpShare': gp.share=!gp.share; render(); break;
+   case 'gpScan': gp.reason='scan'; location.hash='#gp'; break;
    case 'gpBook': if(!(gp.reason&&gp.day&&gp.time)) return;
      gpDone={...gp,id:uid()}; state.appointments=[...(state.appointments||[]),gpDone]; save();
      gp={reason:'',mode:'video',day:'',time:'',share:true}; render(true); break;
