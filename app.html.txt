@@ -1044,7 +1044,7 @@ const PRODUCTS=[
   inc:['Swab and prepaid return envelope','BV-linked bacteria, thrush (Candida), protective Lactobacillus and pH','A clear chart of your result, in plain English','What women with your result are usually offered, with the guideline'],reg:"The partner lab's test carries its own UKCA IVD marking"},
  {id:'vagSti',grp:'test',name:'Vaginal health + STI test',price:169,indic:true,tone:'sage',item:'swab',desc:'The vaginal health test from the same swab, plus a screen for common STIs.',
   inc:['Everything in the vaginal health test','Chlamydia, gonorrhoea, trichomonas and Mycoplasma genitalium','Positive STI results come with a clinician call and treatment route','Remember: STI tests are free from NHS sexual health services'],reg:"The partner lab's test carries its own UKCA IVD marking"},
- {id:'scan',name:'Kidney and bladder scan',price:180,indic:true,indicTxt:'Indicative price, to be set with the scan partner',tone:'sage',item:'scan',desc:'Book a private ultrasound when infections keep coming back after the first steps. No waiting for a referral.',
+ {id:'scan',name:'Kidney and bladder scan',price:null,book:true,priceTxt:'£100–£235',indic:true,indicTxt:'Typical UK private prices · the clinic confirms yours',tone:'sage',item:'scan',desc:'Book a private ultrasound when infections keep coming back after the first steps. No waiting for a referral.',
   inc:['Ultrasound of your kidneys and bladder, with a check of urine left after you wee','At a partner scan clinic near you, usually within a week','Report added to your record','Take the report back to your own GP, or go through it with our GP','Blood in your urine after the infection has cleared needs an urgent NHS check instead'],reg:'Provided by a CQC-registered scan partner'},
  {id:'plan',name:'Silver plan',price:30,alt:'a year · about £2.50 a month',tone:'amber',item:'phone',desc:'No box. The full digital plan on your phone, for a year.',
   inc:['Full pattern check','Written ask-list with references','Test result translation','2-week, 6-week and 3-month check-ins'],reg:'Information and navigation · Class I'},
@@ -1107,7 +1107,7 @@ function viewShop(){
      <p class="small">${p.desc}</p>
      <div class="stack" style="gap:6px">${p.inc.map(i=>`<div class="row small" style="flex-wrap:nowrap;align-items:flex-start;gap:8px"><span style="color:var(--sage);flex:none;margin-top:1px">${ic('check',18,2).replace(ICON.check,'<path d="m5 12.5 4.5 4.5L19 7.5"/>')}</span><span>${i}</span></div>`).join('')}</div>
      <div class="row" style="justify-content:space-between"><span class="ref">${p.reg}</span>
-       ${p.id==='review'?`<a class="btn btn-primary" href="#gp">Book a time</a>`:p.price===null
+       ${p.id==='review'?`<a class="btn btn-primary" href="#gp">Book a time</a>`:p.book?`<button class="btn btn-primary" data-act="shopBook" ${blocked?'disabled style="opacity:.5"':''}>Request a booking</button>`:p.price===null
          ?`<button class="btn btn-soft" data-act="shopInterest" data-id="${p.id}" ${blocked?'disabled style="opacity:.5"':''}>Register interest</button>`
          :`<button class="btn ${basket[p.id]?'btn-soft':'btn-primary'}" data-act="shopAdd" data-id="${p.id}" ${blocked?'disabled style="opacity:.5"':''}>${basket[p.id]?'Added ✓':'Add to basket'}</button>`}</div>
    </section>`).join('')}
@@ -1271,7 +1271,7 @@ function scanCard(){
    ${PAID?step(2,'Choose how to get it','Ask your own GP (free on the NHS), talk it through with our GP, or book a private scan with our partner clinic.')
          :step(2,'Ask your own GP','Show your ask-list and ask your GP to request the scan. It is free on the NHS.')}
    ${step(3,'Take the result back to your GP','Book a follow-up with your own GP to go through the report. If it is normal, most women stay with their GP. If it is not, or more than 150 ml is left behind, your GP can get urology advice.')}
-   ${PAID?`<button class="btn btn-primary btn-block" data-act="shopScan">Book a private scan · from ${money(180)}</button><button class="btn btn-soft btn-block" data-act="gpScan">Talk it through with our GP · ${money(95)}</button><p class="tiny muted">Indicative prices. With your consent, your scan report goes to your own GP.</p>`
+   ${PAID?`<button class="btn btn-primary btn-block" data-act="shopScan">Book a private scan · £100–£235</button><button class="btn btn-soft btn-block" data-act="gpScan">Talk it through with our GP · ${money(95)}</button><p class="tiny muted">Indicative prices. With your consent, your scan report goes to your own GP.</p>`
          :`<a class="btn btn-soft btn-block" href="#card">Show my ask-list to my GP</a>`}
    <p class="tiny muted">GIRFT urology A&G 2024 · AoMRC EBI 2024 recurrent UTI. If you see blood in your urine after the infection has cleared, ask for an urgent check, not a routine scan.</p></section>`;
 }
@@ -1388,6 +1388,7 @@ document.addEventListener('click',e=>{
    case 'delTest': state.tests=state.tests.filter(x=>x.id!==el.dataset.id); save(); render(); break;
    case 'gpSet': gp[el.dataset.f]=el.dataset.v; if(el.dataset.f==='day') gp.time=''; render(); break;
    case 'gpShare': gp.share=!gp.share; render(); break;
+   case 'shopBook': toast('Demo: a partner scan clinic would contact you to book and confirm the price'); break;
    case 'shopInterest': toast('Thanks. We will let you know when Gold launches'); break;
    case 'gpScan': gp.reason='scan'; location.hash='#gp'; break;
    case 'shopScan': location.hash='#shop'; setTimeout(()=>{const e=document.getElementById('p-scan'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'})},150); break;
