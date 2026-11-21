@@ -164,7 +164,7 @@ const RULES=[
  ['Ultrasound and urology referral','Kidney and bladder ultrasound for all; refer only if abnormal or a referral criterion applies; advice and guidance first','AoMRC EBI 2024 (GIRFT partner)','v0.1','Advised by urology clinical director and lead','ok'],
  ['Red flags (sexual health)','Pelvic infection, ectopic, PEP within 72 h, assault','NHS · BASHH · FSRH','v0.1','Awaiting sign-off','warn'],
  ['Pattern sort','10 questions, 4 patterns, ties to MIMIC','Navigator spec v0.1','v0.1','Weights provisional','grey'],
- ['Ask-lists by pattern','2 to 4 asks, each referenced','NICE NG112 · CKS','v0.2','Check section numbers','warn'],
+ ['Ask-lists by pattern','Core asks for all (culture, ultrasound, methenamine, oestrogen if peri/post-menopausal) plus pattern extras','NICE NG112 · GIRFT urology A&G template 14','v0.3','Aligned with GIRFT; clinical lead to confirm','warn'],
  ['Evidence grades','Water A, cranberry B, D-mannose X','Hooton 2018 · Cochrane · MERIT','v0.1','Awaiting sign-off','warn'],
  ['Over-the-counter oestrogen branch','50+ with no period for a year; hysterectomy to a prescriber','MHRA 2022','v0.1','Awaiting sign-off','warn'],
  ['Bladder health score','4 parts, 25 points each','Team assumption','v0.1','Provisional until fitted to outcomes','grey']

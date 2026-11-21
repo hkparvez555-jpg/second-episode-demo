@@ -232,7 +232,7 @@ const SETTLED={fully:'Fully',partly:'Partly',no:'No'};
 const TIMING={sex:'Within 2 days of sex',period:'Around a period',none:'No pattern',notsure:'Not sure'};
 
 const SAFETY=[
- {id:'c1',q:'I have seen blood in my urine, even once, including after an infection was treated',level:3,act:'Contact your GP today.',why:'Visible blood in urine always needs a proper assessment, especially if it is still there after the infection has cleared. Over 45, a referral is usual.',ref:'NICE NG12 1.6.1 · AoMRC EBI 2024, 2.3'},
+ {id:'c1',q:'I have seen blood in my urine, even once, including after an infection was treated',level:3,act:'Contact your GP today.',why:'Visible blood in urine always needs a proper assessment, especially if it is still there after the infection has cleared. If it persists, your GP may refer you urgently to a haematuria clinic (within 2 weeks).',ref:'NICE NG12 1.6.1 · AoMRC EBI 2024, 2.3'},
  {id:'c2',q:'I have been told a dipstick or sample showed blood more than once, without an infection or after it had cleared',level:2,act:'Book a GP review within a week.',why:'Blood that keeps showing up once the infection has gone needs investigating.',ref:'NICE NG12 1.6.2 · AoMRC EBI 2024, 2.3'},
  {id:'c3',q:'I have a fever, shivering, or pain in my back or side under the ribs',level:3,act:'Get same-day care: your GP, or 111 if the surgery is closed.',why:'These can be signs of a kidney infection.',ref:'NICE CKS pyelonephritis'},
  {id:'c4',q:'I am pregnant, or could be',level:3,act:'Contact your GP or midwife today.',why:'UTIs in pregnancy are looked after differently.',ref:'NICE CKS UTI (lower) women'},
@@ -260,7 +260,7 @@ const QUESTIONS=[
 ];
 
 const PAT={
- OEST:{name:'Oestrogen-linked',tone:'peach',icon:'flower',say:'Around and after the menopause, the tissue around the bladder opening thins and loses its natural protection. Women in your situation are usually offered vaginal oestrogen, which roughly halves repeat infections. It is a local treatment, not HRT.',one:'my infections may be linked to lower oestrogen around the bladder opening'},
+ OEST:{name:'Oestrogen-linked',tone:'peach',icon:'flower',say:'Around and after the menopause, the tissue around the bladder opening thins and loses its natural protection. Women in your situation are usually offered vaginal oestrogen, which treats that thinning and roughly halves repeat infections. It is a local treatment, not HRT.',one:'my infections may be linked to lower oestrogen around the bladder opening'},
  CYCLE:{name:'Sex or cycle-linked',tone:'sage',icon:'cycle',say:'Your infections seem to follow a pattern. That usually means bacteria are being pushed towards the bladder at a predictable time, which gives you more options to prevent it.',one:'my infections tend to follow sex or my cycle'},
  EXPO:{name:'High antibiotic exposure',tone:'amber',icon:'pill',say:'You have had a lot of antibiotics. Each course makes the next one more likely to fail, so the priority now is to find out exactly what is growing and to use a non-antibiotic preventer if possible.',one:'I have had a lot of antibiotic courses and would like the next steps guided by lab results'},
  MIMIC:{name:'May not all be infections',tone:'rose',icon:'lens',say:'Some of what you are describing is common in conditions that feel like a UTI but are not one, such as vaginal dryness, thrush, bacterial vaginosis or an irritable bladder. Antibiotics will not help those, so it is worth asking for a proper look.',one:'some of my episodes may not be infections and I would like that looked into'},
@@ -270,20 +270,20 @@ const PAT={
 function askBank(a){
   const otcOK=a.d2==='50'&&a.d1==='stopped';
   return {
-   vagOest:{t:'Ask for vaginal oestrogen cream or pessary.',ref:'NICE NG112 1.2 · CKS recurrent UTI',g:'A'},
+   vagOest:{t:'Ask for vaginal oestrogen cream or pessary. It treats thinning of the vaginal tissue around and after the menopause, which lowers the risk of repeat UTIs.',ref:'NICE NG112 1.2 · GIRFT urology A&G 2024',g:'A'},
    otc: otcOK
-     ?{t:'You are 50 or over with no period for a year, so vaginal oestrogen is sold over the counter as Gina. Ask the pharmacist, no prescription needed.',ref:'MHRA reclassification 2022',g:'A',otc:true}
+     ?{t:'You are 50 or over with no period for a year, so you can buy vaginal oestrogen (Gina) from a pharmacy without a prescription. It is licensed for vaginal dryness and thinning after the menopause, which is linked to repeat UTIs.',ref:'MHRA reclassification 2022',g:'A',otc:true}
      :{t:'Vaginal oestrogen needs a prescriber for you. Ask your GP, nurse or a clinician review.',ref:'MHRA: OTC only from 50 with no period for a year'},
-   culture:{t:'Ask for a urine sample to be sent to the lab every time, before antibiotics start.',ref:'NICE NG112 1.1.5'},
+   culture:{t:'Ask for a urine sample to be sent to the lab every time you have symptoms, before antibiotics start.',ref:'NICE NG112 1.1.5 · GIRFT urology A&G 2024'},
    cultureShare:{t:'Ask for a urine sample before antibiotics, and for the result to be shared with you.',ref:'NICE NG112 1.1.5'},
-   methenamine:{t:'Ask whether methenamine hippurate (Hiprex) is suitable as a preventer instead of long-term antibiotics.',ref:'NICE NG112 1.2.6 (2024 update)',g:'A'},
+   methenamine:{t:'Ask whether methenamine hippurate (Hiprex) is suitable. It is the preferred preventer, ahead of long-term low-dose antibiotics.',ref:'NICE NG112 1.2.6 · GIRFT urology A&G 2024 · ALTAR trial',g:'A'},
    postcoital:{t:'Ask about a single-dose antibiotic taken after sex, rather than a full course each time.',ref:'NICE NG112 1.2.8'},
    contra:{t:'Ask for a contraception review, as diaphragms and spermicide are linked to infections.',ref:'NICE CKS recurrent UTI'},
    habits:{t:'Simple habits that help: pass urine after sex, avoid spermicide, and drink an extra 1.5 litres of water a day if you drink little.',ref:'NICE CKS self-care',g:'A'},
    cranberry:{t:'Cranberry products may modestly reduce repeat infections for some women. Optional, not a must.',ref:'Cochrane review 2023',g:'B'},
    labGuided:{t:'A resistant bug was found before, so ask that antibiotics are chosen from the lab result, not guessed.',ref:'NICE NG112 1.1.6'},
-   referral:{t:'If prevention has not worked and your ultrasound was normal, ask your GP to get specialist advice from urology (advice and guidance). Most women do not need a referral.',ref:'AoMRC EBI 2024, rec 4 · NICE CKS recurrent UTI'},
-   ultrasound:{t:'Ask for a kidney and bladder ultrasound, including a check of how much urine is left after you wee. If it is normal, most women can be looked after by their GP.',ref:'AoMRC EBI 2024, rec 1'},
+   referral:{t:'If prevention has not worked and a lab test has proven an infection breaking through, ask your GP about a urology referral. Otherwise, ask them to get specialist advice from urology (advice and guidance); most women do not need a referral.',ref:'GIRFT urology A&G 2024 · AoMRC EBI 2024'},
+   ultrasound:{t:'Ask for a kidney and bladder ultrasound, including a check of how much urine is left after you wee. If it is normal, most women can be looked after by their GP. If it is abnormal, or more than 150 ml is left behind, ask about a urology referral.',ref:'GIRFT urology A&G 2024 · AoMRC EBI 2024, rec 1'},
    vagAssess:{t:'Ask for the vaginal symptoms to be looked at too: a swab, or an examination for dryness.',ref:'NICE CKS vaginal discharge · CKS menopause'},
    bladder:{t:'Ask whether bladder pain syndrome or an overactive bladder could be playing a part.',ref:'NICE CKS LUTS in women'},
    selfcare:{t:'Keep up the self-care basics: fluids, passing urine after sex, and pain relief such as paracetamol.',ref:'NICE CKS self-care'},
@@ -344,11 +344,15 @@ function buildPlan(){
   const a=state.assessment.answers, r=assign(a), bank=askBank(a);
   const main=asksFor(r.primary,a);
   const extra=[];
-  if(!main.includes('ultrasound')) extra.push('ultrasound'); // every woman with recurrent UTI: KUB ultrasound with post-void residual (EBI 2024, rec 1)
+  // GIRFT urology A&G template 14: these apply to every woman with recurrent UTI, whatever her pattern
+  const periPost=['irregular','stopped','hyst'].includes(a.d1)||a.d2==='45'||a.d2==='50';
+  const core=['ultrasound', main.includes('cultureShare')?null:'culture', 'methenamine', ...(periPost?['vagOest','otc']:[])].filter(Boolean);
+  for(const id of core) if(!main.includes(id)&&!extra.includes(id)) extra.push(id);
   if(r.secondary) for(const id of asksFor(r.secondary,a)) if(!main.includes(id)&&!extra.includes(id)) extra.push(id);
   if(r.expoAddon) for(const id of ['culture','methenamine']) if(!main.includes(id)&&!extra.includes(id)&&!(id==='culture'&&main.includes('cultureShare'))) extra.push(id);
   for(const id of state.extraAsks) if(!main.includes(id)&&!extra.includes(id)) extra.push(id);
-  return {...r,main:main.map(id=>({id,...bank[id]})),extra:extra.slice(0,4).map(id=>({id,...bank[id]}))};
+  if(main.includes('cultureShare')){const i=extra.indexOf('culture'); if(i>=0) extra.splice(i,1);} // one culture ask only
+  return {...r,main:main.map(id=>({id,...bank[id]})),extra:extra.slice(0,7).map(id=>({id,...bank[id]}))};
 }
 
 /* Bladder health score: a summary of her own logged record, not a prediction. Weights are provisional. */
@@ -742,6 +746,7 @@ function viewPlan(){
       <a href="#gp" class="card" style="text-decoration:none;color:inherit"><span style="color:var(--accent)">${ic('heart',26)}</span><h3 style="font-size:16px;margin-top:6px">Talk it through with a GP</h3><p class="tiny muted">Video or phone, with your record shared</p></a>
       <a href="#shop" class="card" style="text-decoration:none;color:inherit"><span style="color:var(--accent)">${ic('bag',26)}</span><h3 style="font-size:16px;margin-top:6px">Get the kit</h3><p class="tiny muted">Card, sample pot and signposts, posted</p></a></div>`
     :`<a class="card" href="https://www.nhs.uk/nhs-app/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center"><span style="color:var(--accent)">${ic('heart',26)}</span><span style="flex:1"><b>Book with your own GP</b><span class="tiny muted" style="display:block">Through the NHS App, free</span></span>${ic('arrow',20)}</a>`}
+   ${bausLeaflet()}
    ${evidenceCard()}
    <p class="tiny muted" style="text-align:center">Generated from your own answers to support a conversation. Not a diagnosis. Guideline section numbers to be checked against the current versions before patient use.</p>
   </div>`;
@@ -1033,7 +1038,7 @@ const PRODUCTS=[
  {id:'kitph',name:'Kit with vaginal pH strips',price:39,tone:'accent',item:'strip',desc:'The kit, plus pH strips to check at home. A pH above 4.5 can be a sign of low oestrogen or a change in vaginal bacteria.',
   inc:['Everything in the kit','Vaginal pH strips, bought in from a UKCA-marked maker','Log the pH result in the app and it feeds the pattern check'],reg:"Strips keep their maker's UKCA marking"},
  {id:'utiTest',grp:'test',name:'Home urine test',price:39,indic:true,tone:'peach',item:'pot',desc:'Is it really a UTI? A lab culture of your urine, with which antibiotics would work if it is.',
-  inc:['Your clinician requests the test, and the lab posts the kit straight to you','Urine pot, instructions and a return envelope','Culture plus antibiotic sensitivities from a UK clinical lab','Your clinician reviews the result before it is added to your record','We turn the result into your ask-list, so the next antibiotic is chosen from it'],reg:"The partner lab's test carries its own UKCA IVD marking"},
+  inc:['Your clinician requests the test, and the lab posts the kit straight to you','Urine pot, instructions and a return envelope','Culture plus antibiotic sensitivities from a UK clinical lab','Your clinician reviews the result before it is added to your record','We turn the result into your ask-list, so the next antibiotic is chosen from it','Bacteria found without symptoms usually do not need treating, and we will say so'],reg:"The partner lab's test carries its own UKCA IVD marking"},
  {id:'vagTest',grp:'test',name:'Vaginal health test',price:129,indic:true,tone:'rose',item:'swab',desc:'A simple home swab that shows the bacteria and yeast in your vagina. Useful when symptoms keep coming back but tests say there is no UTI.',
   inc:['Swab and prepaid return envelope','BV-linked bacteria, thrush (Candida), protective Lactobacillus and pH','A clear chart of your result, in plain English','What women with your result are usually offered, with the guideline'],reg:"The partner lab's test carries its own UKCA IVD marking"},
  {id:'vagSti',grp:'test',name:'Vaginal health + STI test',price:169,indic:true,tone:'sage',item:'swab',desc:'The vaginal health test from the same swab, plus a screen for common STIs.',
@@ -1251,6 +1256,10 @@ const PREVENT=[
   ['lens','Cervical screening','Invited every 3 to 5 years from 25 to 64. Book when your letter comes.','','NHS cervical screening'],
   ['flask','Get a sample tested','With every UTI, ask for a urine sample to go to the lab before antibiotics.','','NICE NG112 1.1.5']]}
 ];
+function bausLeaflet(){
+  return `<a class="card" href="https://www.baus.org.uk/_userfiles/pages/files/Patients/Leaflets/Recurrent%20cystitis.pdf" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center">
+    <span style="color:var(--sage)">${ic('list',26)}</span><span style="flex:1;min-width:0"><b>Self-help leaflet: recurrent cystitis</b><span class="tiny muted" style="display:block">British Association of Urological Surgeons · recommended by GIRFT</span></span>${ic('arrow',20)}</a>`;
+}
 function viewPrevent(){
   return `<div class="stack-lg fade">
    <section class="hero sage">${blob(0,'var(--sage)','58%','-50px',1.3,.3)}${blob(1,'var(--peach)','-22%','60%',.9,.5)}
@@ -1261,6 +1270,7 @@ function viewPrevent(){
      <div class="grid2">${g.items.map(([i,t,w,gr,r])=>`<div class="card stack" style="gap:8px;padding:14px;background:var(--${g.tone}-soft);border-color:transparent">
        <div class="row" style="justify-content:space-between;flex-wrap:nowrap"><span style="color:var(--ink)">${ic(i,28)}</span>${gr?`<span class="grade ${gr}" style="width:28px;height:28px;font-size:13px;border-radius:9px" title="Evidence grade ${gr}">${gr}</span>`:''}</div>
        <b style="font:700 16px/1.25 var(--display)">${t}</b><p class="small">${w}</p><span class="tiny muted">${r}</span></div>`).join('')}</div></section>`).join('')}
+   ${bausLeaflet()}
    ${evidenceCard()}
    <a class="btn btn-primary btn-block" href="#start">Back to start</a></div>`;
 }
