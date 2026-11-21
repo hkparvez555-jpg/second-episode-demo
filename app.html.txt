@@ -1051,7 +1051,7 @@ const PRODUCTS=[
  {id:'gold',name:'Gold plan',price:null,priceTxt:'£60 a year',alt:'Coming once our Class IIa approval is in place',tone:'accent',item:'phone',desc:'Everything in Silver, plus a fuller clinical tier.',
   inc:['Everything in Silver','A more personal, clinically assessed plan from your results and symptoms','Priority booking for tests, scans and GP reviews'],reg:'Planned Class IIa medical device'},
  {id:'review',name:'Clinician review',price:95,priceTxt:'from £95',tone:'rose',item:'heart',desc:'A video review of recurrent UTIs with a GP who has your full record in front of them.',
-  inc:['Prescriptions where suitable, such as vaginal oestrogen under 50 or methenamine','A referral letter where needed','Provided by a CQC-registered partner'],reg:'A separate regulated service, not part of the app'}
+  inc:['Prescriptions where suitable, such as vaginal oestrogen under 50 or methenamine','A referral letter where needed','From our own online GP service'],reg:'A regulated GP service, separate from the app'}
 ];
 const SHOP_LIST=()=>[...PRODUCTS.filter(p=>p.grp==='test'),...PRODUCTS.filter(p=>p.grp!=='test')];
 const money=n=>'£'+n.toFixed(2).replace('.00','');
@@ -1239,7 +1239,7 @@ function viewGp(){
     <button class="flag soft ${gp.share?'on':''}" data-act="gpShare" aria-pressed="${gp.share}"><span class="box"></span><span>Share my Second Episode summary with the GP before the call</span></button>
    </div>
    <button class="btn btn-primary btn-block" data-act="gpBook" ${ready?'':'disabled style="opacity:.5"'}>${ready?`Book ${fmtShort(gp.day)}, ${gp.time} · ${money(95)}`:'Choose a reason, day and time'}</button>
-   <p class="tiny muted">Demo booking. No payment is taken. In the live service, appointments are with GPs from a CQC-registered partner, separate from the app. Not for emergencies: for urgent symptoms use your own GP, 111 or Pharmacy First.</p>
+   <p class="tiny muted">Demo booking. No payment is taken. In the live service, appointments are with GPs from our own online GP service, run separately from the app. Not for emergencies: for urgent symptoms use your own GP, 111 or Pharmacy First.</p>
   </div>`;
 }
 
